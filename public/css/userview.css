@@ -1,0 +1,14 @@
+.nav-link {
+    color: white;
+}
+
+.btn-success {
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    background-color: #38ad48;
+    padding-left: 10px;
+    padding-right: 10px;
+}

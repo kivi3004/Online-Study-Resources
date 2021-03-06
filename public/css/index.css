@@ -1,0 +1,44 @@
+.navbar {
+    background-color: rgb(236, 211, 211);
+    height: 60px;
+}
+
+.navbar-brand {
+    color: rgb(12, 12, 12);
+}
+
+.nav-link {
+    color: blanchedalmond;
+}
+
+.collapse form {
+    margin-left: 10px;
+}
+
+.email {
+    border-radius: 5px; 
+    height: 30px; 
+    border: none; 
+    outline: none;
+}
+
+.password {
+    border-radius: 4px; 
+    height: 30px; 
+    border: none; 
+    outline: none;
+}
+
+button {
+    border-radius: 5px;
+    background-color: rgb(69, 193, 235); 
+    width: 70px; border: none; 
+    height: 30px; 
+    cursor: pointer; 
+    margin-right: 5px;
+    /* border-radius: 5px;background-color: rgb(69, 193, 235); width: 73px;height: 30px; border: none; cursor: pointer; */
+}
+
+button:hover {
+    background-color: rgb(93, 165, 248);
+}
