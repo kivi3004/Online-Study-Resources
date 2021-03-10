@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
-router.get('/osr/userview', (req, res) => {
+router.get('/osr/userview', authenticateToken, (req, res) => {
     res.render('userview', { message: "Userview Page" });
 });
 
@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
     }
 });
 
-router.post('/osr/resources', (req, res) => {
+router.post('/osr/resources', authenticateToken , (req, res) => {
     // 'file' is the name of our file input field in the HTML form
     let upload = multer({ storage: storage }).single('file');
     // console.log(req);
@@ -69,5 +69,24 @@ router.post('/osr/resources', (req, res) => {
         // res.send(`You have uploaded this image: <hr/><img src="../uploads/${req.file.originalname}" width="500"><hr /><a href="./">Upload another image</a>`);
     });
 });
+
+function authenticateToken(req, res, next) {
+    const token = req.cookies.jwt;
+    if (token) {
+        const token = req.cookies.jwt;
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+            // const id = payload.id;
+            const user = {
+                id: payload.id,
+                email: payload.email
+            }
+            req.user = user;
+            next();
+        });
+    }
+    else {
+        res.redirect('/osr');
+    }
+}
 
 module.exports = router;

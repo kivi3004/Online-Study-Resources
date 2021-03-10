@@ -54,7 +54,7 @@ router.post('/osr/signupPost', (req, res) => {
                     [username, email, hash])
                         .then(() => {
                             console.log('Insert Successful');
-                            res.redirect('/osr/login');
+                            res.redirect('/osr');
                         })
                         .catch(err => {
                             console.log('Insertion into database failed!!');
@@ -64,5 +64,29 @@ router.post('/osr/signupPost', (req, res) => {
             .catch(err => console.log("Fetching details from users failed"));
     })
 });
+
+router.get('/osr/logout', authenticateToken, (req, res) => {
+    res.clearCookie('jwt');
+    res.redirect('/osr');
+});
+
+function authenticateToken(req, res, next) {
+    const token = req.cookies.jwt;
+    if (token) {
+        const token = req.cookies.jwt;
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+            // const id = payload.id;
+            const user = {
+                id: payload.id,
+                email: payload.email
+            }
+            req.body = user;
+            next();
+        });
+    }
+    else {
+        res.redirect('/osr');
+    }
+}
 
 module.exports = router;
