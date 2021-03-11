@@ -76,6 +76,7 @@ function authenticateToken(req, res, next) {
         const token = req.cookies.jwt;
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
             // const id = payload.id;
+            console.log(payload)
             const user = {
                 id: payload.id,
                 email: payload.email
