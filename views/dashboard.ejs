@@ -14,7 +14,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
-        <b><a class="navbar-brand " href="/osr/userview">ONLINE STUDY RESOURCES</a>
+        <b><a class="navbar-brand" href="/osr/userview">ONLINE STUDY RESOURCES</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -33,53 +33,64 @@
             </ul>
         </div>
         <div class="collapse navbar-collapse justify-content-end">
-            <a class="nav-link" href="/osr/useraccount">Activities</a>
             <a class="nav-link" href="/osr/addResources">Add Resources</a>
             <a class="nav-link" href="/osr/logout">Logout</a>
 
         </div>
     </nav>
-    <div class="card text-center" style="width: 50%; margin-left: 25%;">
+
 
         <% for(var i=0; i < data.length; i++) { %>
+            
+    <div class="card text-center" style="width: 50%; margin-left: 25%;">
             <div class="card-header mt-1">
                 <%= data[i].title %>
-                <div style="text-align: end;">
-                    <a href="#">Update</a> 
-                    <a href="#">delete</a>
-                </div>
             </div>
             <div class="card-body">
                 <% if(data[i].link){ %>
                     <a href="<%= data[i].link %>" target="_blank">
                         <%= data[i].link %>
                     </a>
-                <% } %>
-                <% if(data[i].content) { %>
-                    <a href="/uploads/<%= data[i].content %>" target="_blank">
-                        <%= data[i].content %>
-                    </a>
-                <% } %>
-                <br>
-                <%= data[i].description %><br>
-                <br>
-                <%= data[i].date %>
+                    <% } %>
+                        <% if(data[i].content) { %>
+                            <a href="/uploads/<%= data[i].content %>" target="_blank">
+                                <%= data[i].content %>
+                            </a>
+                            <% } %>
+                                <br>
+                                <%= data[i].description %><br>
+                                    <br>
+                                    <%= data[i].date %>
 
             </div>
+
             <div class="card-footer text-muted">
-                <img src="/images/like1.jpg" alt="like" onclick="myFunctionlike()" id="like" height="20px" width="20px">
-                <%= data[i].likes %>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <img src="/images/unlike1.jpg" alt="unlike" onclick="myFunctionunlike()" height="20px" width="20px">
-                <%= data[i].unlikes %>
-                <div style="text-align: end;">
-                    <a href="#">Comments...</a> 
-                </div>
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: start;">
+                            <a href="#">Update</a>
+                            <a href="#">delete</a>
+                        </td>
+                        <td style="text-align: center;">
+                            <img src="/images/like1.jpg" alt="like" onclick="myFunctionlike()" id="like" height="20px"
+                                width="20px">
+                            <%= data[i].likes %>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="/images/unlike1.jpg" alt="unlike" onclick="myFunctionunlike()" height="20px"
+                                    width="20px">
+                                <%= data[i].unlikes %>
+                        </td>
+                        <td style="text-align: end;">
+                            <a href="#">Comments...</a>
+                        </td>
+                    </tr>
+                </table>
             </div>
+        </div> 
+            <br><br>
             <% } %>
 
-
-    </div>
+    
     <script>
         function myFunctionlike() {
             document.getElementById("like").src = "/images/like.jpg";
@@ -89,6 +100,7 @@
         }
     </script>
 
+    <br>
 
 
     </script>

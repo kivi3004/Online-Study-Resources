@@ -39,8 +39,9 @@ router.get('/osr/useraccount', authenticateToken, (req, res) => {
             var result = rs[0];
             console.log(result)
             var ext = path.extname(result[0].content)
-            res.render("useraccount", {data : result})
+            res.render("dashboard", {data : result})
         })
+        
         .catch(err => console.log(err))
 
 })
