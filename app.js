@@ -26,7 +26,7 @@ app.use(cookieParser());
 // .catch(err => console.log("Failed to laod from the database"))
 
 app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.set('views', 'views'); 
 
 app.get('/osr', (req, res) => {
     res.render('index', { message: "Index Page" });

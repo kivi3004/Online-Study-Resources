@@ -13,15 +13,16 @@ router.get('/osr/login', (req, res) => {
 router.post('/osr/loginPost', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
-    const maxAge = 1000 * 60 * 10;
+    const maxAge = 2000 * 60 * 10;
     db.execute('SELECT * FROM user WHERE email = ?', [email])
     .then(result => { 
+        console.log("done")
         const rs = result[0];
         if (rs.length == 0) res.render('login', { message: "Email or Password doesn't match" });
         else {
             bcrypt.compare(password, rs[0].password, (err, copmaredResult) => {
                 if (copmaredResult === true) {
-                    const id = rs[0].user_id;
+                    const id = rs[0].user_id; 
                     const token = jwt.sign({ email, id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: maxAge });
                     res.cookie('jwt', token, {maxAge: maxAge, httpOnly: true });
                     res.redirect('/osr/userview');
@@ -42,14 +43,16 @@ router.post('/osr/signupPost', (req, res) => {
     const email = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
+    console.log(req.body);
     bcrypt.hash(password, saltRounds, (err, hash) => {
         if (err) res.redirect('/osr/signup');
         db.execute('SELECT user_id, email, password FROM user WHERE email = ?', [email])
             .then(result => {
                 const rs = result[0]; 
-                console.log(rs);
+                console.log(`Result is ${rs}`);
                 if (rs.length > 0) res.render('sign-up', { message: "User already Registered" })
                 else {
+                    console.log(username, email, hash);
                     db.execute('INSERT INTO user(username, email, password) values (?, ?, ?)',
                     [username, email, hash])
                         .then(() => {
@@ -61,7 +64,7 @@ router.post('/osr/signupPost', (req, res) => {
                         });
                 }
             })
-            .catch(err => console.log("Fetching details from users failed"));
+            .catch(err => console.log(err));
     })
 });
 

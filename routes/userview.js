@@ -8,9 +8,46 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
+
+
+//add some urls
 router.get('/osr/userview', authenticateToken, (req, res) => {
-    res.render('userview', { message: "Userview Page" });
-});
+    //const id = req.user.id;
+
+    res.render("home", { message: "Userview Page" })
+})
+router.get('/osr/addResources', authenticateToken, (req, res) => {
+    res.render("addResources");
+})
+router.post('/osr/dashboard', authenticateToken, (req, res) => {
+    const id = req.user.id
+    db.execute("SELECT * FROM RESOURCES")
+    .then(rs => {
+        var result = rs[0];
+        console.log(result)
+        
+        res.render("dashboard", {data : result})
+    })
+    .catch(err => console.log(err))
+})
+
+router.get('/osr/useraccount', authenticateToken, (req, res) => {
+    const id = req.user.id;
+
+    db.execute("SELECT * FROM RESOURCES WHERE USER_ID = ?", [id])
+        .then(rs => {
+            var result = rs[0];
+            console.log(result)
+            var ext = path.extname(result[0].content)
+            res.render("useraccount", {data : result})
+        })
+        .catch(err => console.log(err))
+
+})
+
+
+// I had added above routes url
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -29,7 +66,7 @@ const storage = multer.diskStorage({
     }
 });
 
-router.post('/osr/resources', authenticateToken , (req, res) => {
+router.post('/osr/resources', authenticateToken, (req, res) => {
     // 'file' is the name of our file input field in the HTML form
     let upload = multer({ storage: storage }).single('file');
     // console.log(req);
@@ -49,23 +86,23 @@ router.post('/osr/resources', authenticateToken , (req, res) => {
         else if (err) {
             return res.send(err);
         }
-
         const currentdate = new Date();
         var datetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " @ "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+            + (currentdate.getMonth() + 1) + "/"
+            + currentdate.getFullYear() + " @ "
+            + currentdate.getHours() + ":"
+            + currentdate.getMinutes() + ":"
+            + currentdate.getSeconds();
 
-        db.execute('INSERT INTO resources(user_id, link, content, date, description) values(?, ?, ?, ?, ?)',
-        [7, req.body.url, req.file.originalname, datetime, req.body.description])
-        .then((result) => {
-            if (res) {
-                res.send('You have successfully add the resources');
-            }
-        })
-        .catch(err => console.log(err));
+        db.execute('INSERT INTO resources(user_id, title, link, content, date, description) values(?, ?, ?, ?, ?)',
+            [req.user.id, req.body.title, req.body.url, req.file.originalname, datetime, req.body.description])
+            .then((result) => {
+                if (res) {
+                    console.log('You have successfully add the resources');
+                    res.redirect("/ose/useraccount");
+                }
+            })
+            .catch(err => console.log(err));
         // res.send(`You have uploaded this image: <hr/><img src="../uploads/${req.file.originalname}" width="500"><hr /><a href="./">Upload another image</a>`);
     });
 });
