@@ -16,6 +16,7 @@ const app = express();
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
 // db.execute('SELECT * FROM user')
@@ -29,7 +30,7 @@ app.set('view engine', 'ejs');
 app.set('views', 'views'); 
 
 app.get('/osr', (req, res) => {
-    res.render('index', { message: "Index Page" });
+    res.render('index', { message: "Index Page", flag: false });
 });
 app.use(userRouter);
 app.use(userviewRouter);

@@ -16,13 +16,12 @@ router.post('/osr/loginPost', (req, res) => {
     const maxAge = 2000 * 60 * 10;
     db.execute('SELECT * FROM user WHERE email = ?', [email])
     .then(result => { 
-        console.log("done")
         const rs = result[0];
         if (rs.length == 0) res.render('login', { message: "Email or Password doesn't match" });
         else {
             bcrypt.compare(password, rs[0].password, (err, copmaredResult) => {
                 if (copmaredResult === true) {
-                    const id = rs[0].user_id; 
+                    const id = rs[0].user_id;  
                     const token = jwt.sign({ email, id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: maxAge });
                     res.cookie('jwt', token, {maxAge: maxAge, httpOnly: true });
                     res.redirect('/osr/userview');

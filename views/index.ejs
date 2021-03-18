@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/index.css">
-    <title>HOME</title>
+    <title><%= message %></title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
@@ -32,12 +32,18 @@
             </ul>
         </div>
         <div class="collapse navbar-collapse justify-content-end">
-            <form method="POST" action="/osr/loginPost">
-                <input type="email" class="email" placeholder="Username" name="email">
-                <input type="password" class="password" placeholder="Password" name="password">
-                <button type="submit">Log In</button>
-            </form>
-            <a href="/osr/signup"><button type="submit">Sign Up</button></a>
+            <% if (!flag) { %>
+                <form method="POST" action="/osr/loginPost">
+                    <input type="email" class="email" placeholder="Username" name="email">
+                    <input type="password" class="password" placeholder="Password" name="password">
+                    <button type="submit">Log In</button>
+                </form>
+                <a href="/osr/signup"><button type="submit">Sign Up</button></a>
+            <% } else { %>
+                <a class="nav-link" href="/osr/addResources">Add Resources</a>
+                <a class="nav-link" href="/osr/activities">Activities</a>
+                <a class="nav-link" href="/osr/logout">Logout</a>
+            <% } %>
         </div>
     </nav>
 

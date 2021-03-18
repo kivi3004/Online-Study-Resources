@@ -6,15 +6,12 @@ const db = require('../util/database');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const randomString = require('randomstring');
 dotenv.config();
-
-
 
 //add some urls
 router.get('/osr/userview', authenticateToken, (req, res) => {
-    //const id = req.user.id;
-
-    res.render("home", { message: "Userview Page" })
+    res.render("index", { message: "Home Page", flag : true })
 })
 router.get('/osr/addResources', authenticateToken, (req, res) => {
     res.render("addResources");
@@ -30,8 +27,8 @@ router.post('/osr/dashboard', authenticateToken, (req, res) => {
     })
     .catch(err => console.log(err))
 })
-
-router.get('/osr/useraccount', authenticateToken, (req, res) => {
+ 
+router.get('/osr/activities', authenticateToken, (req, res) => {
     const id = req.user.id;
 
     db.execute("SELECT * FROM RESOURCES WHERE USER_ID = ?", [id])
@@ -57,7 +54,12 @@ const storage = multer.diskStorage({
 
     // By default, multer removes file extensions so let's add them back
     filename: function (req, file, cb) {
-        file.originalname = Math.random().toString(36).toUpperCase().substring(7) + file.originalname;
+        // file.originalname = Math.random().toString(36).toUpperCase().substring(7) + file.originalname;
+        file.originalname = randomString.generate({
+            length: 12,
+            charset: 'alphanumeric',
+            capitalization: 'lowercase'
+        }) + path.extname(file.originalname);
         cb(null, file.originalname);
         // console.log(file.originalname + '-' + path.extname(file.originalname));
         // console.log(file.originalname);
@@ -95,16 +97,15 @@ router.post('/osr/resources', authenticateToken, (req, res) => {
             + currentdate.getMinutes() + ":"
             + currentdate.getSeconds();
 
-        db.execute('INSERT INTO resources(user_id, title, link, content, date, description) values(?, ?, ?, ?, ?)',
+        db.execute('INSERT INTO resources(user_id, title, link, content, date, description) values(?, ?, ?, ?, ?, ?)',
             [req.user.id, req.body.title, req.body.url, req.file.originalname, datetime, req.body.description])
             .then((result) => {
                 if (res) {
                     console.log('You have successfully add the resources');
-                    res.redirect("/ose/useraccount");
+                    res.redirect("/osr/activities");
                 }
             })
             .catch(err => console.log(err));
-        // res.send(`You have uploaded this image: <hr/><img src="../uploads/${req.file.originalname}" width="500"><hr /><a href="./">Upload another image</a>`);
     });
 });
 
