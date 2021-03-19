@@ -14,7 +14,7 @@ router.get('/osr/userview', authenticateToken, (req, res) => {
     res.render("index", { message: "Home Page", flag : true })
 })
 router.get('/osr/addResources', authenticateToken, (req, res) => {
-    res.render("addResources");
+    res.render("addResources", { message: "Add Resources", flag : true });
 })
 router.post('/osr/dashboard', authenticateToken, (req, res) => {
     const id = req.user.id
@@ -23,7 +23,7 @@ router.post('/osr/dashboard', authenticateToken, (req, res) => {
         var result = rs[0];
         console.log(result)
         
-        res.render("dashboard", {data : result})
+        res.render("dashboard", {data : result,  message: "Dashboard", flag : true })
     })
     .catch(err => console.log(err))
 })
@@ -35,8 +35,7 @@ router.get('/osr/activities', authenticateToken, (req, res) => {
         .then(rs => {
             var result = rs[0];
             console.log(result)
-            var ext = path.extname(result[0].content)
-            res.render("dashboard", {data : result})
+            res.render("dashboard", {data : result,  message: "User Account", flag : true })
         })
         
         .catch(err => console.log(err))

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/index.css">
+    <title><%= locals.message ? locals.message : "osr" %></title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+        <% if(!flag) {%> <b><a class="navbar-brand " href="/osr">ONLINE STUDY RESOURCES</a> 
+        <% } else {%> <b><a class="navbar-brand " href="/osr/userview">ONLINE STUDY RESOURCES</a> <% } %>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button></b>
+            <% if (!flag) { %>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+            </ul>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end">
+                <form method="POST" action="/osr/loginPost">
+                    <input type="email" class="email" placeholder="Username" name="email">
+                    <input type="password" class="password" placeholder="Password" name="password">
+                    <button type="submit">Log In</button>
+                </form>
+                <a href="/osr/signup"><button type="submit">Sign Up</button></a>
+            <% } else { %>
+                
+                <div class="collapse navbar-collapse justify-content-end">
+                    <a class="nav-link" href="#">Search</a>
+                <a class="nav-link" href="/osr/addResources">Add Resources</a>
+                <a class="nav-link" href="/osr/activities">Activities</a>
+                <a class="nav-link" href="#">Contact</a>
+                <a class="nav-link" href="#">About</a>
+                <a class="nav-link" href="/osr/logout">Logout</a>
+            <% } %>
+        </div>
+    </nav>
