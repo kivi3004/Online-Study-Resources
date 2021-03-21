@@ -4,7 +4,9 @@
 
             <div class="card" style="width: 50%; margin-left: 25%;">
                 <div class="card-header text-center mt-1">
-                    <i><%= data[i].title %></i>
+                    <i>
+                        <%= data[i].title %>
+                    </i>
                 </div>
                 <div class="card-body">
                     <% if(data[i].link){ %>
@@ -24,30 +26,49 @@
                                     <br>
                                     <small>Description: </small>
                                     <% if(data[i].description){ %>
-                                        <i><%= data[i].description %></i><br>
-                                            <% } else {%>
-                                                <small>No description available</small> <br>
-                                                <% } %>
+                                        <i>
+                                            <%= data[i].description %>
+                                        </i><br>
+                                        <% } else {%>
+                                            <small>No description available</small> <br>
+                                            <% } %>
                                                 <br>
                                                 <small>Last Updated: </small>
-                                                <i><%= data[i].date %></i>
+                                                <i>
+                                                    <%= data[i].date %>
+                                                </i>
 
                 </div>
                 <div class="card-footer text-muted">
                     <table style="width: 100%;">
                         <tr>
+                            <!-- <td><a class="update" href="#"><%= data[i].res_id %></a></td> -->
                             <td style="text-align: start;">
-                                <a class="update" href="#">Update</a>
-                                <a class="delete" href="#">Delete</a>
+                                <a href="#" data-toggle="modal" data-target="#exampleModal" onclick="update(this.id)" id="<%= data[i].res_id %>">
+                                    Update/Delete
+                                </a>
                             </td>
                             <td style="text-align: center;">
-                                <img src="/images/like1.jpg" alt="like" onclick="myFunctionlike()" id="like"
-                                    height="20px" width="20px">
-                                <%= data[i].likes %>
+                                <% if (data[i].rate == 0) { %>
+                                    <img src="/images/like1.jpg" alt="like" onclick="ratingZeroLike(this.id)" id="<%= data[i].rating_id %>"
+                                        height="20px" width="20px">  <span><%= data[i].likes %></span>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <img src="/images/unlike1.jpg" alt="unlike" onclick="myFunctionunlike()"
-                                        height="20px" width="20px">
-                                    <%= data[i].unlikes %>
+                                    <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingZeroUnlike(this.id)" id="<%= data[i].rating_id %>"
+                                        height="20px" width="20px">  <span><%= data[i].unlikes %></span>
+                                <% } else if (data[i].rate == 1) { %>
+                                    <img src="/images/like.jpg" alt="unlike" onclick="ratingOneLike(this.id)" id="<%= data[i].rating_id %>"
+                                    height="20px" width="20px">  <span><%= data[i].likes %></span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingOneUnlike(this.id)" id="<%= data[i].rating_id %>"
+                                        height="20px" width="20px">  <span><%= data[i].unlikes %></span>
+                                <% } else { %> 
+                                    <img src="/images/like1.jpg" alt="unlike" onclick="ratingMinusOneLike(this.id)" id="<%= data[i].rating_id %>"
+                                    height="20px" width="20px">  <span><%= data[i].likes %></span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <img src="/images/unlike.jpg" alt="unlike" onclick="ratingMinusOneUnlike(this.id)" id="<%= data[i].rating_id %>"
+                                        height="20px" width="20px">  <span><%= data[i].unlikes %></span>
+                                <% } %>
+                              
                             </td>
                             <td style="text-align: end;">
                                 <a class="comments" href="#">View Comments</a>
@@ -58,20 +79,43 @@
             </div>
             <br><br>
             <% } %>
-            <% } else {%>
-                Nothing Found
-            <% } %>
+                <% } else {%>
+                    Nothing Found
+                    <% } %>
+                        
+                    <br>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Update Resource</h5>
+                                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </a>
+    </div>
+    <div class="modal-body">
+        
+                    <form method="post" action="/osr/update" id="form-update-delete">
+                        <div class="form-group">
+                            <label for="ContentURL1">Title<span style="color: red;">*</span></label>
+                            <input type="text" name="title" class="form-control form-control-sm" placeholder="Your Title" id="title" readonly>
+                            <input type="text" name="res_id" style="display: none;" class="form-control form-control-sm" placeholder="Resource ID" id="res_id" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="Description">MODIFY Description</label>
+                            <textarea name="description" class="form-control" rows="2" id="description"></textarea>
+                        </div>
+                        <div class="text-center center-div">
+                            <button type='submit' class='btn-success rounded-pill' id="form-btn-del">Update</button>
+                            <button type='submit' class='btn-success rounded-pill' id="form-btn-update" onclick="setDeleteAction()">Delete</button>
+                        </div>
+                    </form>
+                    
+                </div>
+      </div>
+    </div>
+</div>
 
-
-                        <script>
-                            function myFunctionlike() {
-                                document.getElementById("like").src = "/images/like.jpg";
-                            }
-                            function myFunctionunlike() {
-                                document.getElementById("unlike").src = "/images/unlike.jpg";
-                            }
-                        </script>
-
-                        <br>
-
-                        <%- include("footer") %>
+<script src="../js/dashboard.js"></script>
+<%- include("footer") %>

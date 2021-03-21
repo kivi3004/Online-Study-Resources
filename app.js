@@ -5,6 +5,7 @@ const path = require('path');
 // const indexRouter = require('./routes/indexPage');
 const userRouter = require('./routes/user');
 const userviewRouter = require('./routes/userview');
+const ratingsRouter = require('./routes/ratings');
 // const viewAllRouter = require('./routes/userView');
 // const settingsRouter = require('./routes/settings');
 // const tokenRouter = require('./routes/twofa');
@@ -34,5 +35,6 @@ app.get('/osr', (req, res) => {
 });
 app.use(userRouter);
 app.use(userviewRouter);
+app.use(ratingsRouter);
 
 app.listen(3000);

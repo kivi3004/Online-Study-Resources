@@ -10,6 +10,47 @@ const randomString = require('randomstring');
 dotenv.config();
 
 //add some urls
+
+
+router.post('/osr/fetchdetails', authenticateToken ,(req, res) => {
+    const res_id = req.body.res_id;
+    db.execute("SELECT * FROM RESOURCES WHERE res_id = ?", [res_id])
+    .then(rs => {
+        var result = rs[0];
+        console.log(result);
+        res.send( {data: result} );
+    })
+    .catch(err => console.log(err))
+});
+
+router.post('/osr/update', authenticateToken, (req, res) => {
+    const res_id = req.body.res_id;
+    const description = req.body.description;
+    const currentdate = new Date();
+    var datetime = currentdate.getDate() + "/"
+        + (currentdate.getMonth() + 1) + "/"
+        + currentdate.getFullYear() + " @ "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
+    db.execute("UPDATE resources SET description = ?, date = ?  WHERE res_id = ?", [description, datetime, res_id])
+    .then(rs => {
+        console.log(rs);
+        res.redirect('/osr/activities');
+    })
+    .catch(err => console.log(err))
+});
+
+router.post('/osr/delete', authenticateToken, (req, res) => {
+    const res_id = req.body.res_id;
+    db.execute("DELETE FROM resources WHERE res_id = ?", [res_id])
+    .then(rs => {
+        console.log(rs);
+        res.redirect('/osr/activities');
+    })
+    .catch(err => console.log(err))
+});
+
 router.get('/osr/userview', authenticateToken, (req, res) => {
     res.render("index", { message: "Home Page", flag : true })
 })
@@ -21,20 +62,16 @@ router.post('/osr/dashboard', authenticateToken, (req, res) => {
     db.execute("SELECT * FROM RESOURCES")
     .then(rs => {
         var result = rs[0];
-        console.log(result)
-        
         res.render("dashboard", {data : result,  message: "Dashboard", flag : true })
     })
     .catch(err => console.log(err))
 })
- 
+
 router.get('/osr/activities', authenticateToken, (req, res) => {
     const id = req.user.id;
-
-    db.execute("SELECT * FROM RESOURCES WHERE USER_ID = ?", [id])
-        .then(rs => {
-            var result = rs[0];
-            console.log(result)
+    db.execute("SELECT r.res_id, r.user_id, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.title, ratings.rate, ratings.rating_id FROM resources as r INNER JOIN ratings ON r.res_id = ratings.res_id AND r.user_id = ratings.user_id")
+        .then((rs) => {
+            let result = rs[0];
             res.render("dashboard", {data : result,  message: "User Account", flag : true })
         })
         
@@ -98,10 +135,16 @@ router.post('/osr/resources', authenticateToken, (req, res) => {
 
         db.execute('INSERT INTO resources(user_id, title, link, content, date, description) values(?, ?, ?, ?, ?, ?)',
             [req.user.id, req.body.title, req.body.url, req.file.originalname, datetime, req.body.description])
-            .then((result) => {
-                if (res) {
-                    console.log('You have successfully add the resources');
-                    res.redirect("/osr/activities");
+            .then((resources) => {
+                if (resources) {
+                    const result = resources[0];
+                    console.log(result.insertId);
+                    const res_id = result.insertId;
+                    db.execute('INSERT INTO ratings(res_id, user_id, rate) values(?, ?, ?)', [res_id, req.user.id, 0])
+                        .then(res1 => {
+                            res.redirect("/osr/activities");
+                        })
+                        .catch(err => console.log(err));
                 }
             })
             .catch(err => console.log(err));
