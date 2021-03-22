@@ -11,7 +11,6 @@ dotenv.config();
 
 //add some urls
 
-
 router.post('/osr/fetchdetails', authenticateToken ,(req, res) => {
     const res_id = req.body.res_id;
     db.execute("SELECT * FROM RESOURCES WHERE res_id = ?", [res_id])
@@ -37,16 +36,18 @@ router.post('/osr/update', authenticateToken, (req, res) => {
     .then(rs => {
         console.log(rs);
         res.redirect('/osr/activities');
-    })
+    }) 
     .catch(err => console.log(err))
 });
 
 router.post('/osr/delete', authenticateToken, (req, res) => {
     const res_id = req.body.res_id;
-    db.execute("DELETE FROM resources WHERE res_id = ?", [res_id])
+    db.execute("DELETE FROM ratings WHERE res_id = ?", [res_id])
     .then(rs => {
-        console.log(rs);
-        res.redirect('/osr/activities');
+        db.execute("DELETE FROM resources WHERE res_id = ?", [res_id])
+            .then(res1 => {
+                res.redirect('/osr/activities');
+            })
     })
     .catch(err => console.log(err))
 });
