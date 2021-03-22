@@ -70,7 +70,7 @@ router.post('/osr/dashboard', authenticateToken, (req, res) => {
 
 router.get('/osr/activities', authenticateToken, (req, res) => {
     const id = req.user.id;
-    db.execute("SELECT r.res_id, r.user_id, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.title, ratings.rate, ratings.rating_id FROM resources as r INNER JOIN ratings ON r.res_id = ratings.res_id AND r.user_id = ratings.user_id")
+    db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where r.user_id=?",[id])
         .then((rs) => {
             let result = rs[0];
             res.render("dashboard", {data : result,  message: "User Account", flag : true })
@@ -140,12 +140,13 @@ router.post('/osr/resources', authenticateToken, (req, res) => {
                 if (resources) {
                     const result = resources[0];
                     console.log(result.insertId);
+                    res.redirect("/osr/activities");
                     const res_id = result.insertId;
-                    db.execute('INSERT INTO ratings(res_id, user_id, rate) values(?, ?, ?)', [res_id, req.user.id, 0])
-                        .then(res1 => {
-                            res.redirect("/osr/activities");
-                        })
-                        .catch(err => console.log(err));
+                    // db.execute('INSERT INTO ratings(res_id, user_id, rate) values(?, ?, ?)', [res_id, req.user.id, 0])
+                    //     .then(res1 => {
+                    //         res.redirect("/osr/activities");
+                    //     })
+                    //     .catch(err => console.log(err));
                 }
             })
             .catch(err => console.log(err));

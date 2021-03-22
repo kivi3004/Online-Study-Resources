@@ -21,7 +21,7 @@ router.post('/osr/ratingMinusOneUnlike', authenticateToken, (req, res) => {
                     db.execute('UPDATE resources SET unlikes = unlikes - 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
                         .then(res3 => {
                             console.log(res3);
-                            res.send({message: true});
+                            res.send({ message: true });
                         })
                 })
         })
@@ -41,7 +41,7 @@ router.post('/osr/ratingMinusOneLike', authenticateToken, (req, res) => {
                     db.execute('UPDATE resources SET likes = likes + 1, unlikes = unlikes - 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
                         .then(res3 => {
                             console.log(res3);
-                            res.send({message: true});
+                            res.send({ message: true });
                         })
                 })
         })
@@ -61,7 +61,7 @@ router.post('/osr/ratingOneUnlike', authenticateToken, (req, res) => {
                     db.execute('UPDATE resources SET likes = likes - 1, unlikes = unlikes + 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
                         .then(res3 => {
                             console.log(res3);
-                            res.send({message: true});
+                            res.send({ message: true });
                         })
                 })
         })
@@ -81,7 +81,7 @@ router.post('/osr/ratingOneLike', authenticateToken, (req, res) => {
                     db.execute('UPDATE resources SET likes = likes - 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
                         .then(res3 => {
                             console.log(res3);
-                            res.send({message: true});
+                            res.send({ message: true });
                         })
                 })
         })
@@ -101,7 +101,7 @@ router.post('/osr/ratingZeroLike', authenticateToken, (req, res) => {
                     db.execute('UPDATE resources SET likes = likes + 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
                         .then(res3 => {
                             console.log(res3);
-                            res.send({message: true});
+                            res.send({ message: true });
                         })
                 })
         })
@@ -117,12 +117,42 @@ router.post('/osr/ratingZeroUnlike', authenticateToken, (req, res) => {
                 .then(res2 => {
                     db.execute('UPDATE resources SET unlikes = unlikes + 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
                         .then(res3 => {
-                            res.send({message: true});
+                            res.send({ message: true });
                         })
                 })
         })
         .catch(err => console.log(err));
 });
+
+
+router.post("/osr/FirstLike", authenticateToken, (req, res) => {
+    const res_id = req.body.res_id;
+    const id = req.user.id;
+    console.log(res_id, id);
+    db.execute("Insert INTO RATINGS(user_id, res_id, rate) values (?,?,?)", [id, res_id, 1])
+        .then(res1 => {
+            db.execute('UPDATE resources SET likes = likes + 1 WHERE res_id = ? AND user_id = ?', [res_id, id])
+                .then(res3 => {
+                    res.send({ message: true });
+                })
+
+        })
+        .catch(err => console.log(err));
+})
+router.post("/osr/FirstUnlike", authenticateToken, (req, res) => {
+    const res_id = req.body.res_id;
+    const id = req.user.id;
+    db.execute("Insert INTO RATINGS(user_id, res_id, rate) values (?,?,?)", [id, res_id, -1])
+        .then(res1 => {
+            console.log("done")
+            db.execute('UPDATE resources SET unlikes = unlikes + 1 WHERE res_id = ? AND user_id = ?', [res_id, id])
+                .then(res3 => {
+                    res.send({ message: true });
+                })
+
+        })
+        .catch(err => console.log(err));
+})
 
 function authenticateToken(req, res, next) {
     const token = req.cookies.jwt;

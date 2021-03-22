@@ -107,6 +107,41 @@ const ratingMinusOneUnlike = (rating_id) => {
     .catch(err => console.log('fetching failed'))
 }
 
+function FirstLike(res_id){
+    console.log(res_id);
+    fetch('/osr/FirstLike', {
+        method: "POST",
+        body: JSON.stringify({
+            res_id
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+    .then(res => res.json())
+    .then(res1 => {
+            location.reload();
+    })
+    .catch(err => console.log('fetching failed'))
+}
+function FirstUnlike(res_id){
+    console.log(res_id);
+    fetch('/osr/FirstUnlike', {
+        method: "POST",
+        body: JSON.stringify({
+            res_id
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+    .then(res => res.json())
+    .then(res1 => {
+            location.reload();
+    })
+    .catch(err => console.log('fetching failed'))
+}
+
 const update = (res_id) => {
     console.log(res_id);
     fetch('/osr/fetchdetails', {
