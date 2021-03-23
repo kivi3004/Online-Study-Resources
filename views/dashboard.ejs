@@ -7,13 +7,15 @@
                     <i>
                         <table style="width: 100%;">
                             <tr>
-                                <td style="text-align: start;"><%= data[i].title %></td>
+                                <td style="text-align: start;">
+                                    <%= data[i].title %>
+                                </td>
                                 <td style="text-align: end;"><small>Last Updated: </small>
-                                        <%= data[i].date %>
-                                   </td>
+                                    <%= data[i].date %>
+                                </td>
                             </tr>
                         </table>
-                        
+
                     </i>
                 </div>
                 <div class="card-body">
@@ -48,43 +50,68 @@
                         <tr>
                             <!-- <td><a class="update" href="#"><%= data[i].res_id %></a></td> -->
                             <td style="text-align: start; width: 32%;">
-                                <a href="#" data-toggle="modal" data-target="#exampleModal" onclick="update(this.id)" id="<%= data[i].res_id %>">
+                                <a href="#" data-toggle="modal" data-target="#exampleModal" onclick="update(this.id)"
+                                    id="<%= data[i].res_id %>">
                                     EDIT
                                 </a>
                             </td>
                             <td style="text-align: center;">
-                                <% if (data[i].rate == 0) { %>
-                                    <img src="/images/like1.jpg" alt="like" onclick="ratingZeroLike(this.id)" id="<%= data[i].rating_id %>"
-                                        height="20px" width="20px">  <span><%= data[i].likes %></span>
+                                <% if (data[i].rate==0) { %>
+                                    <img src="/images/like1.jpg" alt="like" onclick="ratingZeroLike(this.id)"
+                                        id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                        <%= data[i].likes %>
+                                    </span>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingZeroUnlike(this.id)" id="<%= data[i].rating_id %>"
-                                        height="20px" width="20px">  <span><%= data[i].unlikes %></span>
-                                <% } else if (data[i].rate == 1) { %>
-                                    <img src="/images/like.jpg" alt="unlike" onclick="ratingOneLike(this.id)" id="<%= data[i].rating_id %>"
-                                    height="20px" width="20px">  <span><%= data[i].likes %></span>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingOneUnlike(this.id)" id="<%= data[i].rating_id %>"
-                                        height="20px" width="20px">  <span><%= data[i].unlikes %></span>
-                                <% } else if(data[i].rate == -2) { %>
-                                    <img src="/images/like1.jpg" alt="like" onclick="FirstLike(this.id)" id="<%= data[i].res_id %>"
-                                        height="20px" width="20px">  <span><%= data[i].likes %></span>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <img src="/images/unlike1.jpg" alt="unlike" onclick="FirstUnlike(this.id)" id="<%= data[i].res_id %>"
-                                        height="20px" width="20px">  <span><%= data[i].unlikes %></span>
-                            <% } else if (data[i].rate == 1) { %>
-                                <% } else { %> 
-                                    <img src="/images/like1.jpg" alt="unlike" onclick="ratingMinusOneLike(this.id)" id="<%= data[i].rating_id %>"
-                                    height="20px" width="20px">  <span><%= data[i].likes %></span>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <img src="/images/unlike.jpg" alt="unlike" onclick="ratingMinusOneUnlike(this.id)" id="<%= data[i].rating_id %>"
-                                        height="20px" width="20px">  <span><%= data[i].unlikes %></span>
-                                <% } %>
-                              
+                                    <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingZeroUnlike(this.id)"
+                                        id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                        <%= data[i].unlikes %>
+                                    </span>
+                                    <% } else if (data[i].rate==1) { %>
+                                        <img src="/images/like.jpg" alt="unlike" onclick="ratingOneLike(this.id)"
+                                            id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                            <%= data[i].likes %>
+                                        </span>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingOneUnlike(this.id)"
+                                            id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                            <%= data[i].unlikes %>
+                                        </span>
+                                        <% } else if(data[i].rate==-2) { %>
+                                            <img src="/images/like1.jpg" alt="like" onclick="FirstLike(this.id)"
+                                                id="<%= data[i].res_id %>" height="20px" width="20px"> <span>
+                                                <%= data[i].likes %>
+                                            </span>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <img src="/images/unlike1.jpg" alt="unlike" onclick="FirstUnlike(this.id)"
+                                                id="<%= data[i].res_id %>" height="20px" width="20px"> <span>
+                                                <%= data[i].unlikes %>
+                                            </span>
+                                            <% } else if (data[i].rate==1) { %>
+                                                <% } else { %>
+                                                    <img src="/images/like1.jpg" alt="unlike"
+                                                        onclick="ratingMinusOneLike(this.id)"
+                                                        id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                                        <%= data[i].likes %>
+                                                    </span>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <img src="/images/unlike.jpg" alt="unlike"
+                                                        onclick="ratingMinusOneUnlike(this.id)"
+                                                        id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                                        <%= data[i].unlikes %>
+                                                    </span>
+                                                    <% } %>
+
                             </td>
                             <td style="text-align: end;">
-                                <a class="comments" href="#">View Comments</a>
+                                <a href="#" onclick="comment(this.id)" id="<%= data[i].res_id %>">View Comments</a>
                             </td>
+
                         </tr>
+                    </table>
+                    <table id="myTable<%= data[i].res_id %>" style="display: none;margin-top: 3%; margin-left: 5%;">
+
+                        
+
                     </table>
                 </div>
             </div>
@@ -92,40 +119,46 @@
                 <% } else {%>
                     Nothing Found
                     <% } %>
-                        
-                    <br>
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Update Resource</h5>
-                                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </a>
-    </div>
-    <div class="modal-body">
-        
-                    <form method="post" action="/osr/update" id="form-update-delete">
-                        <div class="form-group">
-                            <label for="ContentURL1">Title<span style="color: red;">*</span></label>
-                            <input type="text" name="title" class="form-control form-control-sm" placeholder="Your Title" id="title" readonly>
-                            <input type="text" name="res_id" style="display: none;" class="form-control form-control-sm" placeholder="Resource ID" id="res_id" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="Description">MODIFY Description</label>
-                            <textarea name="description" class="form-control" rows="2" id="description"></textarea>
-                        </div>
-                        <div class="text-center center-div">
-                            <button type='submit' class='btn-success rounded-pill' id="form-btn-del">Update</button>
-                            <button type='submit' class='btn-success rounded-pill' id="form-btn-update" onclick="setDeleteAction()">Delete</button>
-                        </div>
-                    </form>
-                    
-                </div>
-      </div>
-    </div>
-</div>
 
-<script src="../js/dashboard.js"></script>
-<%- include("footer") %>
+                        <br>
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Update Resource</h5>
+                                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </a>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form method="post" action="/osr/update" id="form-update-delete">
+                                            <div class="form-group">
+                                                <label for="ContentURL1">Title<span style="color: red;">*</span></label>
+                                                <input type="text" name="title" class="form-control form-control-sm"
+                                                    placeholder="Your Title" id="title" readonly>
+                                                <input type="text" name="res_id" style="display: none;"
+                                                    class="form-control form-control-sm" placeholder="Resource ID"
+                                                    id="res_id" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Description">MODIFY Description</label>
+                                                <textarea name="description" class="form-control" rows="2"
+                                                    id="description"></textarea>
+                                            </div>
+                                            <div class="text-center center-div">
+                                                <button type='submit' class='btn-success rounded-pill'
+                                                    id="form-btn-del">Update</button>
+                                                <button type='submit' class='btn-success rounded-pill'
+                                                    id="form-btn-update" onclick="setDeleteAction()">Delete</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script src="../js/dashboard.js"></script>
+                        <%- include("footer") %>

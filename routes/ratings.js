@@ -18,7 +18,7 @@ router.post('/osr/ratingMinusOneUnlike', authenticateToken, (req, res) => {
                 .then(res2 => {
                     console.log(result[0].res_id);
                     // console.log(result);
-                    db.execute('UPDATE resources SET unlikes = unlikes - 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
+                    db.execute('UPDATE resources SET unlikes = unlikes - 1 WHERE res_id = ?', [result[0].res_id])
                         .then(res3 => {
                             console.log(res3);
                             res.send({ message: true });
@@ -38,7 +38,7 @@ router.post('/osr/ratingMinusOneLike', authenticateToken, (req, res) => {
                 .then(res2 => {
                     console.log(result[0].res_id);
                     // console.log(result);
-                    db.execute('UPDATE resources SET likes = likes + 1, unlikes = unlikes - 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
+                    db.execute('UPDATE resources SET likes = likes + 1, unlikes = unlikes - 1 WHERE res_id = ?', [result[0].res_id])
                         .then(res3 => {
                             console.log(res3);
                             res.send({ message: true });
@@ -58,7 +58,7 @@ router.post('/osr/ratingOneUnlike', authenticateToken, (req, res) => {
                 .then(res2 => {
                     console.log(result[0].res_id);
                     // console.log(result);
-                    db.execute('UPDATE resources SET likes = likes - 1, unlikes = unlikes + 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
+                    db.execute('UPDATE resources SET likes = likes - 1, unlikes = unlikes + 1 WHERE res_id = ?', [result[0].res_id])
                         .then(res3 => {
                             console.log(res3);
                             res.send({ message: true });
@@ -78,7 +78,7 @@ router.post('/osr/ratingOneLike', authenticateToken, (req, res) => {
                 .then(res2 => {
                     console.log(result[0].res_id);
                     // console.log(result);
-                    db.execute('UPDATE resources SET likes = likes - 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
+                    db.execute('UPDATE resources SET likes = likes - 1 WHERE res_id = ?', [result[0].res_id])
                         .then(res3 => {
                             console.log(res3);
                             res.send({ message: true });
@@ -98,7 +98,7 @@ router.post('/osr/ratingZeroLike', authenticateToken, (req, res) => {
                 .then(res2 => {
                     console.log(result[0].res_id);
                     // console.log(result);
-                    db.execute('UPDATE resources SET likes = likes + 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
+                    db.execute('UPDATE resources SET likes = likes + 1 WHERE res_id = ?', [result[0].res_id])
                         .then(res3 => {
                             console.log(res3);
                             res.send({ message: true });
@@ -115,7 +115,7 @@ router.post('/osr/ratingZeroUnlike', authenticateToken, (req, res) => {
             const result = res1[0];
             db.execute('UPDATE ratings SET rate = ? WHERE rating_id = ?', [-1, rating_id])
                 .then(res2 => {
-                    db.execute('UPDATE resources SET unlikes = unlikes + 1 WHERE res_id = ? AND user_id = ?', [result[0].res_id, result[0].user_id])
+                    db.execute('UPDATE resources SET unlikes = unlikes + 1 WHERE res_id = ?', [result[0].res_id])
                         .then(res3 => {
                             res.send({ message: true });
                         })
@@ -131,7 +131,7 @@ router.post("/osr/FirstLike", authenticateToken, (req, res) => {
     console.log(res_id, id);
     db.execute("Insert INTO RATINGS(user_id, res_id, rate) values (?,?,?)", [id, res_id, 1])
         .then(res1 => {
-            db.execute('UPDATE resources SET likes = likes + 1 WHERE res_id = ? AND user_id = ?', [res_id, id])
+            db.execute('UPDATE resources SET likes = likes + 1 WHERE res_id = ?', [res_id])
                 .then(res3 => {
                     res.send({ message: true });
                 })
@@ -145,7 +145,7 @@ router.post("/osr/FirstUnlike", authenticateToken, (req, res) => {
     db.execute("Insert INTO RATINGS(user_id, res_id, rate) values (?,?,?)", [id, res_id, -1])
         .then(res1 => {
             console.log("done")
-            db.execute('UPDATE resources SET unlikes = unlikes + 1 WHERE res_id = ? AND user_id = ?', [res_id, id])
+            db.execute('UPDATE resources SET unlikes = unlikes + 1 WHERE res_id = ?', [res_id])
                 .then(res3 => {
                     res.send({ message: true });
                 })

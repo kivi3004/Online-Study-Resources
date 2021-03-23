@@ -59,13 +59,14 @@ router.get('/osr/addResources', authenticateToken, (req, res) => {
     res.render("addResources", { message: "Add Resources", flag : true });
 })
 router.post('/osr/dashboard', authenticateToken, (req, res) => {
-    const id = req.user.id
-    db.execute("SELECT * FROM RESOURCES")
-    .then(rs => {
-        var result = rs[0];
-        res.render("dashboard", {data : result,  message: "Dashboard", flag : true })
-    })
-    .catch(err => console.log(err))
+    const id = req.user.id;
+    db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id")
+        .then((rs) => {
+            let result = rs[0];
+            res.render("dashboard", {data : result,  message: "User Account", flag : true })
+        })
+        
+        .catch(err => console.log(err))
 })
 
 router.get('/osr/activities', authenticateToken, (req, res) => {
