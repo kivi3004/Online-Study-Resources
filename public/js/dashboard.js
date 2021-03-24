@@ -141,9 +141,9 @@ function FirstUnlike(res_id) {
         .catch(err => console.log('fetching failed'))
 }
 function comment(res_id) {
-    console.log(res_id)
+    // console.log(res_id)
     if (document.getElementById("myTable" + res_id).style.display == "block") {
-        document.getElementById("myTable"+res_id).style.display = "none"
+        document.getElementById("myTable" + res_id).style.display = "none"
         location.reload()
     }
     else {
@@ -158,47 +158,48 @@ function comment(res_id) {
         })
             .then(res => res.json())
             .then(res1 => {
-                var newText = document.createTextNode('new row');
                 document.getElementById("myTable" + res_id).style.display = "block"
+                // const comment_div = document.getElementById('comment-div');
+                var tbodyRef = document.getElementById('myTable' + res_id);
                 for (var i = 0; i < res1.data.length; i++) {
-                    var tbodyRef = document.getElementById('myTable' + res_id);
                     var newRow = tbodyRef.insertRow();
                     newRow.setAttribute("id", i);
-                    console.log(document.getElementById(i))
+                    // console.log(document.getElementById(i))
                     // Insert a cell at the end of the row
-                    var newCell = newRow.insertCell();
-                    var newCell1 = newRow.insertCell();
-                    var newCell2 = newRow.insertCell();
-
+                    var tbl = document.createElement("table");
+                    const id = 'comment' + parseInt(res1.data[i].comment_id)
+                    tbl.setAttribute('id', id);
+                    const tbl_id = document.getElementById(id);
+                    console.log(tbl_id);
+                    var tr = document.createElement('tr');
+                    var td = document.createElement("td");
+                    var td1 = document.createElement("td");
+                    var td2 = document.createElement("td");
                     var a = document.createElement('a');
-                    var link = document.createTextNode(" (reply)");
+                    var link = document.createTextNode("reply");
                     a.appendChild(link);
                     a.id = res1.data[i].comment_id
                     a.href = "#";
-                    // Append a text node to the cell
-                    newCell.appendChild(document.createTextNode('@' + res1.data[i].username));
-                    newCell1.appendChild(document.createTextNode(res1.data[i].comment));
-                    newCell2.appendChild(a);
-                    newCell.style.fontWeight = 'bold'
-                    // var tr = document.createElement('tr');
-                    // tr.setAttribute('id', 'newRow' + i, 0);
-                    // console.log(document.getElementById("newrow" + i))
-                    // var td1 = document.createElement('td');
-                    // var td2 = document.createElement('td');
-                    // var td3 = document.createElement('td');
-
-                    // td1.appendChild(document.createTextNode('@' + res1.data[i].username));
-                    // td2.appendChild(document.createTextNode(res1.data[i].comment));
-                    // td1.style.fontWeight = 'bold'
-                   
-
-                    // td3.appendChild(a);
-                    // tr.appendChild(td1)
-                    // tr.appendChild(td2)
-                    // tr.appendChild(td3)
-
-                    // tbodyRef.appendChild(tr);
+                    td.appendChild(document.createTextNode('@' + res1.data[i].username));
+                    td1.appendChild(document.createTextNode(res1.data[i].comment));
+                    td2.appendChild(a);
+                    td.style.fontWeight = 'bold'
+                    tr.appendChild(td);
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tbl.appendChild(tr);
+                    var newCell = newRow.insertCell();
+                    newCell.appendChild(tbl)
                     document.getElementById(a.id).onclick = commentReply
+                    // console.log(document.getElementById(a.id))
+                    // var newCell1 = newRow.insertCell();
+                    // var newCell2 = newRow.insertCell();
+
+                    // // Append a text node to the cell
+                    // newCell.appendChild(document.createTextNode('@' + res1.data[i].username));
+                    // newCell1.appendChild(document.createTextNode(res1.data[i].comment));
+                    // newCell2.appendChild(a);
+                    // console.log('A_id' + a.id);
                 }
             })
             .catch(err => console.log('fetching failed'))
@@ -207,10 +208,17 @@ function comment(res_id) {
 
 function commentReply() {
     console.log(this.id);
+    //console.log('this.id' + this.id);
     c_id = this.id
-    var x = this.parentNode.parentNode.parentNode.parentNode.id;
+    console.log(this.parentNode.parentNode.parentNode.id)
+    var x = this.parentNode.parentNode.parentNode.id
+    console.log(document.getElementById(x))
     var table = document.getElementById(x)
-    var r = parseInt(this.parentNode.parentNode.id)+1;
+    console.log(table)
+    // var x = this.parentNode.parentNode.parentNode.parentNode.id;
+    // console.log('X' +x);
+    // var table = document.getElementById(x)
+    // var r = parseInt(this.parentNode.parentNode.id)+1;
     fetch('/osr/commentReply', {
         method: "POST",
         body: JSON.stringify({
@@ -222,25 +230,37 @@ function commentReply() {
     })
         .then(res => res.json())
         .then(res1 => {
+            //var tbodyRef = document.getElementById('myTable').getElementsByTagName('tbody')[0];
 
-            var tbl = document.createElement('table');
-            for (var i = 0; i < res1.reply.length; i++) {
-                var tr = document.createElement('tr');
+            // Insert a row at the end of table
+            var newRow = table.insertRow();
 
-                var td1 = document.createElement('td');
-                var td2 = document.createElement('td');
-                td1.appendChild(document.createTextNode('@' + res1.reply[i].username));
-                td2.appendChild(document.createTextNode(res1.reply[i].comment));
-                td1.style.fontWeight = 'bold'
+            // Insert a cell at the end of the row
+            var newCell = newRow.insertCell();
+            var newCell1 = newRow.insertCell();
 
-                tr.appendChild(td1)
-                tr.appendChild(td2)
-                tbl.appendChild(tr);
-                console.log("ok")
-            }
-            var row = table.insertRow(r);
-            var celltr = row.insertCell(0);
-            row.appendChild(tbl);
+            // Append a text node to the cell
+            var newText = document.createTextNode('new row');
+            newCell1.appendChild(newText);
+            // var td = document.createElement('td')
+            // var tbl = document.createElement('table');
+            // for (var i = 0; i < res1.reply.length; i++) {
+            //     var tr = document.createElement('tr');
+
+            //     var td1 = document.createElement('td');
+            //     var td2 = document.createElement('td');
+            //     td1.appendChild(document.createTextNode('@' + res1.reply[i].username));
+            //     td2.appendChild(document.createTextNode(res1.reply[i].comment));
+            //     td1.style.fontWeight = 'bold'
+
+            //     tr.appendChild(td1)
+            //     tr.appendChild(td2)
+            //     tbl.appendChild(tr);
+            //     console.log("ok")
+            // }
+            // // var row = table.insertRow(r);
+            // // var celltr = row.insertCell(0);
+            // // row.appendChild(tbl);
         })
         .catch(err => console.log('fetching failed'))
 
