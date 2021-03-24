@@ -8,26 +8,47 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
+router.post('/osr/postReply', authenticateToken, (req, res) => {
+    const commentId = req.body.comment_id;
+    const commentReply = req.body.commentReply;
+    const id = req.user.id;
+    db.execute('INSERT INTO comment_reply(comment_id, user_id, comment) values(?, ?, ?)', [commentId, id, commentReply])
+        .then(res1 => {
+            res.redirect('/osr/activities');
+        })
+        .catch(err => console.log(err));
+})
+
+router.post('/osr/addComment', authenticateToken, (req, res) => {
+    const res_id = req.body.res_id;
+    const id = req.user.id;
+    const comment = req.body.comment;
+    console.log(res_id, id, comment);
+    db.execute('INSERT INTO COMMENTS(res_id, user_id, comment) VALUES(?, ?, ?)', [res_id, id, comment])
+        .then(result => {
+            res.redirect('/osr/activities');
+        })
+        .catch(err => console.log(err));
+})
+
 router.post('/osr/comment', authenticateToken, (req, res) =>{
     console.log(req.body.res_id);
-    var id = req.body.res_id
-    db.query('SELECT u.username, u.user_id, c.res_id, c.comment, c.comment_id  FROM comments as c NATURAL JOIN user as u WHERE c.res_id=?', [id])
+    var res_id = req.body.res_id
+    db.execute('SELECT u.username, u.user_id, c.res_id, c.comment, c.comment_id  FROM comments as c INNER JOIN user as u ON c.user_id = u.user_id where res_id = ?', [res_id])
     .then(res1 =>{
-        //console.log(res1);
-        console.log(res1[0]);
         res.send({message:"true", data:res1[0]})
     })
     .catch(err => console.log("err"))
 
 })
 router.post('/osr/commentReply', authenticateToken, (req, res) =>{
-    console.log(req.body.c_id);
-    var id = req.body.c_id
-    db.query('SELECT u.username, c.comment from comment_reply as c Natural Join user as u where c.comment_id = ?',[id])
+    const comment_id = req.body.comment_id
+    console.log(comment_id);
+    db.query('SELECT u.username, c.comment from comment_reply as c INNER JOIN user as u ON c.user_id = u.user_id where comment_id = ?',[comment_id])
     .then(res1 =>{
         //console.log(res1);
         console.log(res1[0]);
-        res.send({message:"true", reply:res1[0]})
+        res.send({message:"true", data:res1[0]})
     })
     .catch(err => console.log("err"))
 

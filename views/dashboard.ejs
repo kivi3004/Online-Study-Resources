@@ -102,15 +102,23 @@
                                                     <% } %>
 
                             </td>
+                            <td style="text-align: end; width: 32%;">
+                                <a href="#" data-toggle="modal" data-target="#exampleModal1" onclick="addComment(this.id)"
+                                    id="<%= data[i].res_id %>">
+                                    Add Comment
+                                </a>
+                            </td>
                             <td style="text-align: end;">
                                 <a href="#" onclick="comment(this.id)" id="<%= data[i].res_id %>">View Comments</a>
                             </td>
 
                         </tr>
                     </table>
-                    <table id="myTable<%= data[i].res_id %>" style="display: none;margin-top: 3%; margin-left: 5%;">
+                    <div id="comment-section<%= data[i].res_id %>" style="display: none;">
+                    </div>
+                    <!-- <table id="myTable<%= data[i].res_id %>" style="display: none;margin-top: 3%; margin-left: 5%;">
 
-                    </table>
+                    </table> -->
                 </div>
             </div>
             <% } %>
@@ -158,5 +166,76 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Add Comment</h5>
+                                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </a>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form method="post" action="/osr/addComment" id="form-update-delete">
+                                            <div class="form-group">
+                                                <label for="ContentURL1">Title<span style="color: red;">*</span></label>
+                                                <input type="text" name="title" class="form-control form-control-sm"
+                                                    placeholder="Your Title" id="commentTitle" readonly>
+                                                <input type="text" name="res_id" style="display: none;"
+                                                    class="form-control form-control-sm" placeholder="Resource ID"
+                                                    id="CommentRes_id" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Description">Your Comment</label>
+                                                <textarea name="comment" class="form-control" rows="2"
+                                                    id="comment"></textarea>
+                                            </div>
+                                            <div class="text-center center-div">
+                                                <button type='submit' class='btn-success rounded-pill'
+                                                    id="form-btn-del">Post</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Your Replies</h5>
+                                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </a>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form method="post" action="/osr/postReply" id="form-update-delete">
+                                            <div class="form-group" id="comment-reply">
+                                            </div>
+                                            <div class="form-group">
+                                                <input style="display: none;" type="text" name="comment_id" class="form-control form-control-sm"
+                                                    placeholder="Your Title" id="comment_id">
+                                                <label for="Description">Your Reply</label>
+                                                <textarea name="commentReply" class="form-control" rows="2"
+                                                    id="commentReply"></textarea>
+                                            </div>
+                                            <div class="text-center center-div">
+                                                <button type='submit' class='btn-success rounded-pill'
+                                                    id="form-btn-del">Post</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <script src="../js/dashboard.js"></script>
+                        <script src="../js/comment.js"></script>
                         <%- include("footer") %>
