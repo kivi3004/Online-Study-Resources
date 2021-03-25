@@ -1,4 +1,6 @@
-let flag = 0;
+const deleteComment = () => {
+    document.getElementById("form-comment-update-delete").action = "/osr/deleteComment";
+}
 function comment(res_id) {
     if (document.getElementById("comment-section" + res_id).style.display == "block") {
         document.getElementById("comment-section" + res_id).style.display = "none";
@@ -17,7 +19,9 @@ function comment(res_id) {
             .then(res => res.json())
             .then(res1 => {
                 const data = res1.data;
+                
                 const commentDiv = document.getElementById('comment-section' + res_id);
+                const user_id = document.getElementById('current_user_id').value;
                 commentDiv.removeChild(commentDiv.firstChild);
                 let tbl = document.createElement('table');
                 tbl.setAttribute('id', 'hello');
@@ -28,6 +32,7 @@ function comment(res_id) {
                     let cell1 = row.insertCell(0);
                     let cell2 = row.insertCell(1);
                     let cell3 = row.insertCell(2);
+                    let cell4 = row.insertCell(3);
 
                     cell1.innerHTML = '@' + data[i].username;
                     cell1.style.fontWeight = 'bold';
@@ -37,23 +42,59 @@ function comment(res_id) {
                     a.setAttribute('data-target', '#exampleModal2');
                     let link = document.createTextNode("View Replies");
                     a.appendChild(link);
+                    a.style.paddingLeft = "65px";
                     a.href = "#";
                     a.id = data[i].comment_id;
                     cell3.appendChild(a);
-
+                    if (data[i].user_id == user_id) {
+                        let b = document.createElement('a');
+                        b.setAttribute('data-toggle', 'modal');
+                        b.setAttribute('data-target', '#exampleModal3');
+                        let link = document.createTextNode("Edit");
+                        b.appendChild(link);
+                        b.href = "#";
+                        b.style.paddingLeft = "25px";
+                        b.id = data[i].comment_id;
+                        cell4.appendChild(b);
+                        b.addEventListener('click', editComment);
+                    }
+                    else {
+                        cell4.innerHTML = "";
+                    }
                     a.addEventListener('click', commentReply);
                 }
                 commentDiv.append(tbl);
             })
-            .catch(err => console.log('fetching failed'))
+            .catch(err => console.log('Fetching failed'))
     }
+}
+
+function editComment() {
+    const comment_id = this.id;
+    fetch('/osr/getComment', {
+        method: "POST",
+        body: JSON.stringify({
+            comment_id
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+        .then(res => res.json())
+        .then(res1 => {
+            const data = res1.data;
+            console.log(data[0].comment);
+            document.getElementById('edit_comment_id').value = data[0].comment_id;
+            document.getElementById('comment_edit').value = data[0].comment;
+        })
+        .catch(err => console.log(err));
 }
 
 function commentReply() {
     const comment_id = this.id;
     console.log(comment_id);    
     fetch('/osr/commentReply', {
-        method: "POST",
+        method: "POST", 
         body: JSON.stringify({
             comment_id
         }),
@@ -68,65 +109,20 @@ function commentReply() {
             document.getElementById('comment_id').value = comment_id;
             commentReplyDiv.removeChild(commentReplyDiv.firstChild);
             let tbl = document.createElement('table');
-            // tbl.setAttribute('id', 'hello');
             for (let i = 0; i < data.length; i++) {
                 let row = tbl.insertRow(i);
                 row.id = "tableRepliesRow" + i;
 
                 let cell1 = row.insertCell(0);
                 let cell2 = row.insertCell(1);
-                // let cell3 = row.insertCell(2);
 
                 cell1.innerHTML = '@' + data[i].username;
                 cell1.style.fontWeight = 'bold';
                 cell2.innerHTML = data[i].comment;
-                // let a = document.createElement('a');
-                // a.setAttribute('data-toggle', 'modal');
-                // a.setAttribute('data-target', '#exampleModal2');
-                // let link = document.createTextNode("View Replies");
-                // a.appendChild(link);
-                // a.href = "#";
-                // a.id = data[i].comment_id;
-                // cell3.appendChild(a);
-
-                // a.addEventListener('click', commentReply);
             }
             commentReplyDiv.append(tbl);
-
-            //var tbodyRef = document.getElementById('myTable').getElementsByTagName('tbody')[0];
-
-            // Insert a row at the end of table
-            // var newRow = table.insertRow();
-
-            // // Insert a cell at the end of the row
-            // var newCell = newRow.insertCell();
-            // var newCell1 = newRow.insertCell();
-
-            // // Append a text node to the cell
-            // var newText = document.createTextNode('new row');
-            // newCell1.appendChild(newText);
-            // var td = document.createElement('td')
-            // var tbl = document.createElement('table');
-            // for (var i = 0; i < res1.reply.length; i++) {
-            //     var tr = document.createElement('tr');
-
-            //     var td1 = document.createElement('td');
-            //     var td2 = document.createElement('td');
-            //     td1.appendChild(document.createTextNode('@' + res1.reply[i].username));
-            //     td2.appendChild(document.createTextNode(res1.reply[i].comment));
-            //     td1.style.fontWeight = 'bold'
-
-            //     tr.appendChild(td1)
-            //     tr.appendChild(td2)
-            //     tbl.appendChild(tr);
-            //     console.log("ok")
-            // }
-            // // var row = table.insertRow(r);
-            // // var celltr = row.insertCell(0);
-            // // row.appendChild(tbl);
         })
         .catch(err => console.log('fetching failed'))
-
 }
 
 const addComment = (res_id) => {

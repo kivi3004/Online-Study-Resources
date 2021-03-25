@@ -74,7 +74,7 @@ router.get('/osr/activities', authenticateToken, (req, res) => {
     db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where r.user_id=?",[id])
         .then((rs) => {
             let result = rs[0];
-            res.render("dashboard", {data : result,  message: "User Account", flag : true })
+            res.render("dashboard", {data : result, id, message: "User Account", flag : true })
         })
         
         .catch(err => console.log(err))
