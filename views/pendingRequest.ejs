@@ -1,0 +1,97 @@
+<%- include("header") %>
+  <% if(data.length) { %>
+    <% for(var i=0; i < data.length; i++) { %>
+
+      <div class="card" style="width: 50%; margin-left: 25%; margin-top: 5%;">
+        <div class="card-header mt-1">
+          <i>
+            <table style="width: 100%;">
+              <tr>
+                <td style="text-align: start;">
+                  <%= data[i].title %>
+                </td>
+                <td style="text-align: end;"><small>Last Updated: </small>
+                  <%= data[i].date %>
+                </td>
+              </tr>
+            </table>
+
+          </i>
+        </div>
+        <div class="card-body">
+          <% if(data[i].link){ %>
+            <small> URL: </small>
+            <a href="<%= data[i].link %>" target="_blank">
+              <%= data[i].link %>
+            </a>
+            <br>
+            <% } %>
+              <% if(data[i].content) { %>
+                <small> FILE: </small>
+                <a id="download-link" href="/uploads/<%= data[i].content %>" download="<%= data[i].content %>"
+                  target="_blank">
+                  <%= data[i].content %>
+                </a>
+                <% } %>
+                  <br>
+                  <small>Description: </small>
+                  <% if(data[i].description){ %>
+                    <i>
+                      <%= data[i].description %>
+                    </i><br>
+                    <% } else {%>
+                      <small>No description available</small> <br>
+                      <% } %>
+                        <br>
+
+        </div>
+        <div class="card-footer text-muted" style="text-align: center;">
+          <a href="#" data-toggle="modal" data-target="#exampleModal" onclick="update(this.id)"
+            id="<%= data[i].res_id %>">
+            EDIT
+          </a>
+        </div>
+      </div>
+
+      <% } %>
+        <% } else {%>
+          Nothing Found
+          <% } %>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Resource</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </a>
+                  </div>
+                  <div class="modal-body">
+
+                    <form method="post" action="/osr/update" id="form-update-delete">
+                      <div class="form-group">
+                        <label for="ContentURL1">Title<span style="color: red;">*</span></label>
+                        <input type="text" name="title" class="form-control form-control-sm" placeholder="Your Title"
+                          id="title" readonly>
+                        <input type="text" name="res_id" style="display: none;" class="form-control form-control-sm"
+                          placeholder="Resource ID" id="res_id" readonly>
+                      </div>
+                      <div class="form-group">
+                        <label for="Description">MODIFY Description</label>
+                        <textarea name="description" class="form-control" rows="2" id="description"></textarea>
+                      </div>
+                      <div class="text-center center-div">
+                        <button type='submit' class='btn-success rounded-pill' id="form-btn-del">Update</button>
+                        <button type='submit' class='btn-success rounded-pill' id="form-btn-update"
+                          onclick="setDeleteAction()">Delete</button>
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <script src="../js/dashboard.js" />
+            <%- include("footer") %>

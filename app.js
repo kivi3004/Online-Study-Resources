@@ -7,6 +7,7 @@ const userRouter = require('./routes/user');
 const userviewRouter = require('./routes/userview');
 const ratingsRouter = require('./routes/ratings');
 const commentsRouter = require('./routes/comments');
+const adminRouter = require('./routes/admin');
 // const viewAllRouter = require('./routes/userView');
 // const settingsRouter = require('./routes/settings');
 // const tokenRouter = require('./routes/twofa');
@@ -38,5 +39,6 @@ app.use(userRouter);
 app.use(userviewRouter);
 app.use(ratingsRouter);
 app.use(commentsRouter);
+app.use(adminRouter);
 
 app.listen(3000);
