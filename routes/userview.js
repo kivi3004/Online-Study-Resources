@@ -58,16 +58,18 @@ router.get('/osr/userview', authenticateToken, (req, res) => {
 router.get('/osr/addResources', authenticateToken, (req, res) => {
     res.render("addResources", { message: "Add Resources", flag : true });
 })
-router.post('/osr/dashboard', authenticateToken, (req, res) => {
+router.post('/osr/search', authenticateToken, (req, res) => {
     const id = req.user.id;
+    console.log(req.body.action)
     db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=?", ['approve'])
         .then((rs) => {
             let result = rs[0];
-            res.render("dashboard", {data : result, id,  message: "User Account", flag : true })
+            res.render("home", {data : result, id,  message: "User Account", flag : true, filter : req.body.action })
         })
         
         .catch(err => console.log(err))
 })
+
 
 router.get('/osr/activities', authenticateToken, (req, res) => {
     const id = req.user.id;
@@ -85,7 +87,19 @@ router.get('/osr/request', authenticateToken, (req,res) =>{
     db.execute('select * from resources where approval = ? and user_id = ?', ['pending', id])
     .then(res1 => {
         console.log(res1[0])
-        res.render("pendingRequest", {flag : true, data: res1[0]})
+        res.render("pendingRequest", {flag : true, data: res1[0], filter:"pending"})
+    })
+    .catch(err =>{
+        console.log("err");
+    })
+})
+
+router.post('/osr/request', authenticateToken, (req,res) =>{
+    var id = req.user.id
+    db.execute('select * from resources where approval = ? and user_id = ?', [req.body.action, id])
+    .then(res1 => {
+        console.log(res1[0])
+        res.render("pendingRequest", {flag : true, data: res1[0], filter:req.body.action})
     })
     .catch(err =>{
         console.log("err");

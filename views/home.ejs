@@ -1,0 +1,271 @@
+<%- include("header") %>
+<table style="width: 100%; text-align: center;">
+    <tr>
+        <form action="/osr/search" method="post">
+            <td><button type="submit" name="action" value="Recently Added" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Recently Added</button></td>    
+            <td><button type="submit" name="action" value="Most Voted" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Voted</button></td>  
+            <td><button type="submit" name="action" value="Most Visited" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Visited</button></td>  
+            <td><button type="submit" name="action" value="Most Commented" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Commented</button></td>  
+        
+        </form>
+        
+    </tr>
+    <tr>
+        <% if(filter === "Recently Added") { %>
+            <td style="background-color: blue;"></td>
+        <% } else { %>
+            <td></td>
+        <% } %>
+        <% if(filter === "Most Voted") { %>
+            <td style="background-color: blue;"></td>
+        <% } else { %>
+            <td></td>
+        <% } %>
+        <% if(filter === "Most Visited") { %>
+            <td style="background-color: blue;"></td>
+        <% } else { %>
+            <td></td>
+        <% } %>
+        <% if(filter === "Most Commented") { %>
+            <td style="background-color: blue;"></td>
+        <% } else { %>
+            <td></td>
+        <% } %>
+    </tr>
+</table>
+
+<% if(data.length) { %>
+    <% for(var i=0; i < data.length; i++) { %>
+
+            <div class="card" style="width: 50%; margin-left: 25%; margin-top: 5%;">
+                <div class="card-header mt-1">
+                    <i>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="text-align: start;">
+                                    <%= data[i].title %>
+                                </td>
+                                <td style="text-align: end;"><small>Last Updated: </small>
+                                    <%= data[i].date %>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                    </i>
+                </div>
+                <div class="card-body">
+                    <% if(data[i].link){ %>
+                        <small> URL: </small>
+                        <a href="<%= data[i].link %>" target="_blank">
+                            <%= data[i].link %>
+                        </a>
+                        <br>
+                        <% } %>
+                            <% if(data[i].content) { %>
+                                <small> FILE: </small>
+                                <a id="download-link" href="/uploads/<%= data[i].content %>"
+                                    download="<%= data[i].content %>" target="_blank">
+                                    <%= data[i].content %>
+                                </a>
+                                <% } %>
+                                <br>
+                                <small>Description: </small>
+                                <% if(data[i].description){ %>
+                                    <i>
+                                        <%= data[i].description %>
+                                    </i><br>
+                                    <% } else {%>
+                                        <small>No description available</small> <br>
+                                        <% } %>
+                                        <br>
+                                        
+                </div>
+                <div class="card-footer text-muted">
+                    <table style="width: 100%;">
+                        <tr>
+                            
+                        <td style="text-align: start; width: 52%;">
+                            <% if (data[i].rate==0) { %>
+                                <img src="/images/like1.jpg" alt="like" onclick="ratingZeroLike(this.id)"
+                                id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                    <%= data[i].likes %>
+                                </span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingZeroUnlike(this.id)"
+                                        id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                            <%= data[i].unlikes %>
+                                        </span>
+                                        <% } else if (data[i].rate==1) { %>
+                                            <img src="/images/like.jpg" alt="unlike" onclick="ratingOneLike(this.id)"
+                                            id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                            <%= data[i].likes %>
+                                        </span>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="/images/unlike1.jpg" alt="unlike" onclick="ratingOneUnlike(this.id)"
+                                        id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                            <%= data[i].unlikes %>
+                                        </span>
+                                        <% } else if(data[i].rate==-2) { %>
+                                            <img src="/images/like1.jpg" alt="like" onclick="FirstLike(this.id)"
+                                            id="<%= data[i].res_id %>" height="20px" width="20px"> <span>
+                                                <%= data[i].likes %>
+                                            </span>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <img src="/images/unlike1.jpg" alt="unlike" onclick="FirstUnlike(this.id)"
+                                            id="<%= data[i].res_id %>" height="20px" width="20px"> <span>
+                                                <%= data[i].unlikes %>
+                                            </span>
+                                            <% } else if (data[i].rate==1) { %>
+                                                <% } else { %>
+                                                    <img src="/images/like1.jpg" alt="unlike"
+                                                    onclick="ratingMinusOneLike(this.id)"
+                                                    id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                                        <%= data[i].likes %>
+                                                    </span>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <img src="/images/unlike.jpg" alt="unlike"
+                                                    onclick="ratingMinusOneUnlike(this.id)"
+                                                    id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
+                                                        <%= data[i].unlikes %>
+                                                    </span>
+                                                    <% } %>
+                                                    
+                                                </td>
+                                                <td style="text-align: end; width: 32%;">
+                                <a href="#" data-toggle="modal" data-target="#exampleModal1" onclick="addComment(this.id)"
+                                id="<%= data[i].res_id %>">
+                                Add Comment
+                            </a>
+                        </td>
+                        <td style="text-align: end;">
+                            <a href="#" onclick="comment(this.id)" id="<%= data[i].res_id %>">View Comments</a>
+                            </td>
+
+                        </tr>
+                    </table>
+                    <div id="comment-section<%= data[i].res_id %>" style="display: none;">
+                    </div>
+                    <!-- <table id="myTable<%= data[i].res_id %>" style="display: none;margin-top: 3%; margin-left: 5%;">
+                        
+                    </table> -->
+                </div>
+            </div>
+            <% } %>
+            <% } else {%>
+                Nothing Found
+                <% } %>
+                
+                <br>
+                        
+                        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add Comment</h5>
+                                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </a>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                        <form method="post" action="/osr/addComment" id="form-update-delete">
+                                            <div class="form-group">
+                                                <label for="ContentURL1">Title<span style="color: red;">*</span></label>
+                                                <input type="text" name="title" class="form-control form-control-sm"
+                                                    placeholder="Your Title" id="commentTitle" readonly>
+                                                    <input type="text" name="res_id" style="display: none;"
+                                                    class="form-control form-control-sm" placeholder="Resource ID"
+                                                    id="CommentRes_id" readonly>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="Description">Your Comment</label>
+                                                    <textarea name="comment" class="form-control" rows="2"
+                                                    id="comment"></textarea>
+                                                </div>
+                                                <div class="text-center center-div">
+                                                <button type='submit' class='btn-success rounded-pill'
+                                                id="form-btn-del">Post</button>
+                                            </div>
+                                        </form>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Your Replies</h5>
+                                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </a>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <form method="post" action="/osr/postReply" id="form-update-delete">
+                                        <div class="form-group" id="comment-reply">
+                                        </div>
+                                        <div class="form-group">
+                                            <input style="display: none;" type="text" name="comment_id" class="form-control form-control-sm"
+                                            placeholder="Your Title" id="comment_id">
+                                            <label for="Description">Your Reply</label>
+                                            <textarea name="commentReply" class="form-control" rows="2"
+                                            id="commentReply"></textarea>
+                                        </div>
+                                        <div class="text-center center-div">
+                                            <button type='submit' class='btn-success rounded-pill'
+                                            >Post</button>
+                                        </div>
+                                    </form>
+                                    
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Comment</h5>
+                                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </a>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <form method="post" action="/osr/updateComment" id="form-comment-update-delete">
+                                        <input style="display: none;" type="text" name="comment_id" class="form-control form-control-sm"
+                                            placeholder="Your Title" id="edit_comment_id">
+                                                    <div class="form-group">
+                                                        <label for="Description">Comment</label>
+                                                        <textarea name="comment_edit" class="form-control" rows="2"
+                                                        id="comment_edit"></textarea>
+                                                    </div>
+                                                    <div class="text-center center-div">
+                                                        <button type='submit' class='btn-success rounded-pill'
+                                                        id="form-btn-updateComment">Update</button>
+                                                        <button type='submit' class='btn-success rounded-pill'
+                                                            id="form-btn-deleteComment" onclick="deleteComment()">Delete</button>
+                                                        </div>
+                                                    </form>
+                                                    
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                        <input type="text" name="" id="current_user_id" value="<%= id %>" style="display: none;">
+                        <script>
+                            function fun(){
+                                console.log("ok")
+                            }
+                        </script>
+                        <script src="../js/dashboard.js"></script>
+                        <script src="../js/comment.js"></script>
+
+<%- include("footer") %>
