@@ -4,7 +4,6 @@
         <form action="/osr/search" method="post">
             <td><button type="submit" name="action" value="Recently Added" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Recently Added</button></td>    
             <td><button type="submit" name="action" value="Most Voted" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Voted</button></td>  
-            <td><button type="submit" name="action" value="Most Visited" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Visited</button></td>  
             <td><button type="submit" name="action" value="Most Commented" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Commented</button></td>  
         
         </form>
@@ -61,14 +60,14 @@
                         </a>
                         <br>
                         <% } %>
-                            <% if(data[i].content) { %>
+                            <% if(data[i].content != "NO FILE CHOOSEN") { %>
                                 <small> FILE: </small>
                                 <a id="download-link" href="/uploads/<%= data[i].content %>"
                                     download="<%= data[i].content %>" target="_blank">
                                     <%= data[i].content %>
                                 </a>
-                                <% } %>
                                 <br>
+                                <% } %>
                                 <small>Description: </small>
                                 <% if(data[i].description){ %>
                                     <i>
@@ -84,7 +83,7 @@
                     <table style="width: 100%;">
                         <tr>
                             
-                        <td style="text-align: start; width: 52%;">
+                        <td style="text-align: start; width: 48%;">
                             <% if (data[i].rate==0) { %>
                                 <img src="/images/like1.jpg" alt="like" onclick="ratingZeroLike(this.id)"
                                 id="<%= data[i].rating_id %>" height="20px" width="20px"> <span>
@@ -138,7 +137,7 @@
                             </a>
                         </td>
                         <td style="text-align: end;">
-                            <a href="#" onclick="comment(this.id)" id="<%= data[i].res_id %>">View Comments</a>
+                            <a href="#" onclick="comment(this.id)" id="<%= data[i].res_id %>">View Comments (<%= data[i].Comments %>)</a>
                             </td>
 
                         </tr>

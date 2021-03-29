@@ -58,22 +58,54 @@ router.get('/osr/userview', authenticateToken, (req, res) => {
 router.get('/osr/addResources', authenticateToken, (req, res) => {
     res.render("addResources", { message: "Add Resources", flag : true });
 })
-router.post('/osr/search', authenticateToken, (req, res) => {
+router.post('/osr/dashboard', authenticateToken, (req, res) => {
     const id = req.user.id;
-    console.log(req.body.action)
     db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=?", ['approve'])
         .then((rs) => {
             let result = rs[0];
-            res.render("home", {data : result, id,  message: "User Account", flag : true, filter : req.body.action })
+            res.render("home", {data : result, id,  message: "User Account", flag : true, filter : "Recently Added" })
         })
         
         .catch(err => console.log(err))
+})
+router.post('/osr/search', authenticateToken, (req, res) => {
+    const id = req.user.id;
+    const action = req.body.action;
+    console.log(req.body.action)
+    if(action === "Recently Added"){
+        db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? ORDER BY date DESC", ['approve'])
+            .then((rs) => {
+                let result = rs[0];
+                res.render("home", {data : result, id,  message: "User Account", flag : true, filter : req.body.action})
+            })
+            
+            .catch(err => console.log(err))
+    }
+    else if(action === "Most Voted"){
+        db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? ORDER BY likes DESC", ['approve'])
+            .then((rs) => {
+                let result = rs[0];
+                res.render("home", {data : result, id,  message: "User Account", flag : true, filter : req.body.action})
+            })
+            
+            .catch(err => console.log(err))
+    }
+    
+    else {
+        db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? ORDER BY comments  DESC", ['approve'])
+            .then((rs) => {
+                let result = rs[0];
+                res.render("home", {data : result, id,  message: "User Account", flag : true, filter : req.body.action})
+            })
+            
+            .catch(err => console.log(err))
+    }
 })
 
 
 router.get('/osr/activities', authenticateToken, (req, res) => {
     const id = req.user.id;
-    db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where r.user_id=? and approval=?",[id, 'approve'])
+    db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments , IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where r.user_id=? and approval=?",[id, 'approve'])
         .then((rs) => {
             let result = rs[0];
             res.render("dashboard", {data : result, id, message: "User Account", flag : true })
@@ -139,19 +171,6 @@ router.post('/osr/resources', authenticateToken, (req, res) => {
     upload(req, res, function (err) {
         // req.file contains information of uploaded file
         // req.body contains information of text fields, if there were any
-
-        if (req.fileValidationError) {
-            return res.send(req.fileValidationError);
-        }
-        else if (!req.file) {
-            return res.send('Please select an file to upload');
-        }
-        else if (err instanceof multer.MulterError) {
-            return res.send(err);
-        }
-        else if (err) {
-            return res.send(err);
-        }
         const currentdate = new Date();
         var datetime = currentdate.getDate() + "/"
             + (currentdate.getMonth() + 1) + "/"
@@ -160,7 +179,37 @@ router.post('/osr/resources', authenticateToken, (req, res) => {
             + currentdate.getMinutes() + ":"
             + currentdate.getSeconds();
 
-        db.execute('INSERT INTO resources(user_id, title, link, content, date, description) values(?, ?, ?, ?, ?, ?)',
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        }
+        else if (!req.file) {
+            db.execute('INSERT INTO resources(user_id, title, link, content, date, description) values(?, ?, ?, ?, ?, ?)',
+            [req.user.id, req.body.title, req.body.url, "NO FILE CHOOSEN", datetime, req.body.description])
+            .then((resources) => {
+                if (resources) {
+                    const result = resources[0];
+                    console.log(result.insertId);
+                    res.redirect("/osr/activities");
+                    const res_id = result.insertId;
+                    // db.execute('INSERT INTO ratings(res_id, user_id, rate) values(?, ?, ?)', [res_id, req.user.id, 0])
+                    //     .then(res1 => {
+                    //         res.redirect("/osr/activities");
+                    //     })
+                    //     .catch(err => console.log(err));
+                }
+            })
+            .catch(err => console.log(err));
+            console.log("NO file")
+            // res.send('Please select an file to upload');
+        }
+        else if (err instanceof multer.MulterError) {
+            return res.send(err);
+        }
+        else if (err) {
+            return res.send(err);
+        }
+        else{
+            db.execute('INSERT INTO resources(user_id, title, link, content, date, description) values(?, ?, ?, ?, ?, ?)',
             [req.user.id, req.body.title, req.body.url, req.file.originalname, datetime, req.body.description])
             .then((resources) => {
                 if (resources) {
@@ -176,6 +225,8 @@ router.post('/osr/resources', authenticateToken, (req, res) => {
                 }
             })
             .catch(err => console.log(err));
+        }
+        
     });
 });
 

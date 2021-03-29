@@ -1,3 +1,11 @@
-#download-link a :hover {
-    color: red;
+.headerContent{
+    text-align: center; 
+    background-color: gainsboro; 
+    font-size: 30px;
+    letter-spacing: 4px; 
+    margin-left: 25%;
+    width: 50%; 
+    margin-top: 1%;
+    padding-top: 5px ;
+    padding-bottom: 5px ;
 }

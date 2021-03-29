@@ -1,8 +1,9 @@
 <%- include("header") %>
+<div class="headerContent"><spam>MY RESOURCES</spam></div>
 <% if(data.length) { %>
     <% for(var i=0; i < data.length; i++) { %>
 
-            <div class="card" style="width: 50%; margin-left: 25%; margin-top: 5%;">
+            <div class="card" style="width: 50%; margin-left: 25%; margin-bottom: 20px;">
                 <div class="card-header mt-1">
                     <i>
                         <table style="width: 100%;">
@@ -26,14 +27,14 @@
                         </a>
                         <br>
                         <% } %>
-                            <% if(data[i].content) { %>
+                            <% if(data[i].content != "NO FILE CHOOSEN") { %>
                                 <small> FILE: </small>
                                 <a id="download-link" href="/uploads/<%= data[i].content %>"
                                     download="<%= data[i].content %>" target="_blank">
                                     <%= data[i].content %>
                                 </a>
-                                <% } %>
                                 <br>
+                                <% } %>
                                 <small>Description: </small>
                                 <% if(data[i].description){ %>
                                     <i>
@@ -108,8 +109,8 @@
                                 Add Comment
                             </a>
                         </td>
-                        <td style="text-align: end;">
-                            <a href="#" onclick="comment(this.id)" id="<%= data[i].res_id %>">View Comments</a>
+                        <td style="text-align: end;"> 
+                            <a href="#" onclick="comment(this.id)" id="<%= data[i].res_id %>">View Comments (<%= data[i].Comments %>)</a>
                             </td>
 
                         </tr>

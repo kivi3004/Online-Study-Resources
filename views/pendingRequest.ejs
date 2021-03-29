@@ -48,14 +48,15 @@
             </a>
             <br>
             <% } %>
-              <% if(data[i].content) { %>
-                <small> FILE: </small>
-                <a id="download-link" href="/uploads/<%= data[i].content %>" download="<%= data[i].content %>"
-                  target="_blank">
+            <% if(data[i].content != "NO FILE CHOOSEN") { %>
+              <small> FILE: </small>
+              <a id="download-link" href="/uploads/<%= data[i].content %>"
+                  download="<%= data[i].content %>" target="_blank">
                   <%= data[i].content %>
-                </a>
-                <% } %>
-                  <br>
+              </a>
+              <br>
+              <% } %>
+                  
                   <small>Description: </small>
                   <% if(data[i].description){ %>
                     <i>
@@ -76,6 +77,10 @@
         </div>
       </div>
 
+      <% } else {%>
+        <div class="card-footer text-muted" style="text-align: center;">
+          <p style="color: red;">This Resource is either exist or invalid</p>
+        </div>
       <% } %>
       <% } %>
       <% } %>
