@@ -71,12 +71,13 @@ function isValid(str){
         const special    = document.getElementById('special').style.color;
         const password    = document.getElementById('password').value;
         const confirmPassword    = document.getElementById('passwordConfirm').value;
-        if (password !== confirmPassword) {
-            alert("Password doesn't matched");
-            return false;
-        }
-        if (uppercase === 'green' && characters === 'green' && lowercase === 'green' && special === 'green') {
+        if (uppercase === 'green' && characters === 'green' && lowercase === 'green' && special === 'green' && password === confirmPassword) {
             return true;
         }
+        if (uppercase === 'red') alert('Password must contain atleast one Upper case Character.');
+        else if (lowercase === 'red') alert('Password must contain atleast one Lower case Character.');
+        else if (special === 'red') alert('Password must contain atleast one Special Character.');
+        else if(characters === 'red') alert('Password must be atleast 8-16 characters long.');
+        else alert("Password doesn't matched");
         return false;
     }
