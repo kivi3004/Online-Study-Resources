@@ -16,7 +16,7 @@ router.post('/osr/login_post', (req, res) => {
     const email = req.body.email
     const pass = req.body.password
     const maxAge = 2000* 60 * 10;
-    db.execute('select * from admin_info where email = ?', [email])
+    db.execute('select * from admin where email = ?', [email])
         .then(result => {
             console.log(result[0])
             if (result[0].length == 0) res.render('admin_login', { message: "Only admins can enter in this section" });
