@@ -1,16 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">  
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-            integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link rel="stylesheet" href="../css/index.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>Admin</title>
+    <!DOCTYPE html>
+    <html lang="en">
+    
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">  
+            <!-- Bootstrap CSS -->
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+                integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+            <link rel="stylesheet" href="../css/index.css">
+            <!-- <link rel="stylesheet" href="../css/dashboard.css"> -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <title><%= locals.message ? locals.message : "admin" %></title>
+    <style>
+    .headerContent{
+        text-align: center; 
+        background-color: gainsboro; 
+        font-size: 30px;
+        letter-spacing: 4px; 
+        margin-left: 25%;
+        width: 50%; 
+        margin-top: 1%;
+        padding-top: 5px ;
+        padding-bottom: 5px ;
+    }
+</style>
 </head>
 
 <body>
@@ -21,58 +38,97 @@
                 <span class="navbar-toggler-icon"></span>
             </button></b>
         <div class="collapse navbar-collapse justify-content-end">
-            <a class="nav-link" href="/osr/admin/logout" style="color: honeydew;" >logout</a>
+            <a class="nav-link" href="/osr/admin/logout" style="color: honeydew;">logout</a>
 
         </div>
     </nav>
-    
-    <div class="container mt-4">
-        <div class="card" style="margin-top: 10%; text-align: center;">
-            <div class="card-header ">
-                <h4>Resouces Request</h4>
-                </a>
-            </div>
-            <div class="card-body">
-                <table style="width: 100%;">
-                    <tr>
-                        <th>
 
-                            RESOUCES
-                        </th>
-                        <th>
-                            ACTION
+    <div class="headerContent">
+        <spam>Resouces Request</spam>
+    </div>
+    <% if(data.length) { %>
+        <% for(var i=0; i < data.length; i++) { %>
 
-                        </th>
-                    </tr>
-                    <% for(var i=0; i < data.length; i++) { %>
+            <div class="card" style="width: 50%; margin-left: 25%; margin-bottom: 20px;">
+                <div class="card-header mt-1">
+                    <i>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="text-align: start;">
+                                    <%= data[i].title %>
+                                </td>
+                                <td style="text-align: end;"><small>Last Updated: </small>
+                                    <%= data[i].date %>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </i>
+                </div>
+                <div class="card-body">
+                    <% if(data[i].link){ %>
+                        <small> URL: </small>
+                        <a href="<%= data[i].link %>" target="_blank">
+                            <%= data[i].link %>
+                        </a>
+                        <br>
+                        <% } %>
+                            <% if(data[i].content !="NO FILE CHOOSEN" ) { %>
+                                <small> FILE: </small>
+                                <a id="download-link" href="/uploads/<%= data[i].content %>"
+                                    download="<%= data[i].content %>" target="_blank">
+                                    <%= data[i].content %>
+                                </a>
+                                <br>
+                                <% } %>
+                                    <small>Description: </small>
+                                    <% if(data[i].description){ %>
+                                        <i>
+                                            <%= data[i].description %>
+                                        </i><br>
+                                        <% } else {%>
+                                            <small>No description available</small> <br>
+                                            <% } %>
+                                                <br>
+
+                </div>
+                <div class="card-footer text-muted">
+                    <table style="width: 100%;">
                         <tr>
-                            <td>
-                                <%= data[i].content %> 
-                            </td>
-                            <td>
-                                <form method="post" action="/osr/action">
+                            <form method="post" action="/osr/action">
+                                <td style="text-align: end;">
                                     <button type="submit" class="btn btn-success btn-sm" value="<%= data[i].res_id %>"
                                         id='<%= data[i].res_id %>' name="accept">Accept</button>
+                                </td>
+                                <td>
                                     <button type="submit" class="btn btn-danger btn-sm" value="<%= data[i].res_id %>"
                                         id='<%= data[i].res_id %>' name="decline">Decline</button>
-                                </form>
+                            </form>
                             </td>
+
                         </tr>
-                        <% } %>
-                </table>
+                    </table>
+                    <div id="comment-section<%= data[i].res_id %>" style="display: none;">
+                    </div>
+                    <!-- <table id="myTable<%= data[i].res_id %>" style="display: none;margin-top: 3%; margin-left: 5%;">
+                            
+                        </table> -->
+                </div>
             </div>
-        </div>
-    </div>
-    <script src="../js/admin_action.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-        crossorigin="anonymous"></script>
+            <% } %>
+                <% } else {%>
+                    Nothing Found
+                    <% } %>
+                        <script src="../js/admin_action.js"></script>
+                        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                            crossorigin="anonymous"></script>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+                            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+                            crossorigin="anonymous"></script>
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+                            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+                            crossorigin="anonymous"></script>
 </body>
 
 </html>

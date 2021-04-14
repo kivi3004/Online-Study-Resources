@@ -2,9 +2,9 @@
 <table style="width: 100%; text-align: center;">
     <tr>
         <form action="/osr/search" method="post">
-            <td><button type="submit" name="action" value="Recently Added" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Recently Added</button></td>    
-            <td><button type="submit" name="action" value="Most Voted" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Voted</button></td>  
-            <td><button type="submit" name="action" value="Most Commented" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Commented</button></td>  
+            <td><button type="submit" name="action" value="Recently Added_<%= search %>" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Recently Added</button></td>    
+            <td><button type="submit" name="action" value="Most Voted_<%= search %>" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Voted</button></td>  
+            <td><button type="submit" name="action" value="Most Commented_<%= search %>" class="btn btn-light btn-lg btn-block" style="height: fit-content;">Most Commented</button></td>  
         
         </form>
         
@@ -16,11 +16,6 @@
             <td></td>
         <% } %>
         <% if(filter === "Most Voted") { %>
-            <td style="background-color: blue;"></td>
-        <% } else { %>
-            <td></td>
-        <% } %>
-        <% if(filter === "Most Visited") { %>
             <td style="background-color: blue;"></td>
         <% } else { %>
             <td></td>
