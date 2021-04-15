@@ -42,3 +42,14 @@ button {
 button:hover {
     background-color: rgb(93, 165, 248);
 }
+
+#search {
+    margin-top: 30px;
+    background-color: white;
+}
+
+.w-50 {
+    border-radius: 5px;
+    border:1px solid;
+    padding:5px 10px;
+}

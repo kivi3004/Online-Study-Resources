@@ -17,7 +17,6 @@ router.post('/osr/ratingMinusOneUnlike', authenticateToken, (req, res) => {
             db.execute('UPDATE ratings SET rate = ? WHERE rating_id = ?', [0, rating_id])
                 .then(res2 => {
                     console.log(result[0].res_id);
-                    // console.log(result);
                     db.execute('UPDATE resources SET unlikes = unlikes - 1 WHERE res_id = ?', [result[0].res_id])
                         .then(res3 => {
                             console.log(res3);
