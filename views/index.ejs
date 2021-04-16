@@ -20,13 +20,32 @@
     </div> -->
     <div>
         <div id="search" class="bg text-center center-div">
-            <form method="post" action="/osr/search">
+            <% if(flag) { %>
+                <form method="post" action="/osr/search">
+                    <div class="form-group pt-4">
+                        <input type="text" class='w-50' placeholder="Search" name="Search" required>
+                    </div>
+                    <button type='submit' name="action" value="Recently Added" class='btn-success rounded-pill'>Search</button>
+                </form>
+                <div class="Popular_Title">
+                    <h3>Populer Resources</h3>
+                    <ul>
+                        <% for(var i=0; i<data.length; i++) { %>
+                            <% if(i==10) {%>
+                                <% break  %>
+                            <% } %>
+                            <li> <%= data[i].title %></li>
+                        <% } %>
+                    </ul>
+                </div>
+            <% } else { %>
+            <form method="post" action="/osr/not_login/search">
                 <div class="form-group pt-4">
                     <input type="text" class='w-50' placeholder="Search" name="Search" required>
                 </div>
                 <button type='submit' name="action" value="Recently Added" class='btn-success rounded-pill'>Search</button>
             </form>
-
+            <% } %>
         </div>
     </div>
 <%- include("footer") %>

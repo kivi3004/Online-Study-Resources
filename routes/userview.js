@@ -53,7 +53,15 @@ router.post('/osr/delete', authenticateToken, (req, res) => {
 });
 
 router.get('/osr/userview', authenticateToken, (req, res) => {
-    res.render("index", { message: "Home Page", flag: true })
+    db.execute("SELECT title FROM resources ORDER by likes")
+        .then(result => {
+            console.log(result)
+            const rs = result[0]
+            console.log(rs)
+            res.render("index", { message: "Home Page", flag: true , data : rs})
+        })
+        .catch(err => console.log(err))
+    
 })
 router.get('/osr/addResources', authenticateToken, (req, res) => {
     res.render("addResources", { message: "Add Resources", flag: true });
@@ -63,54 +71,39 @@ router.post('/osr/dashboard', authenticateToken, (req, res) => {
     db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=?", ['approve'])
         .then((rs) => {
             let result = rs[0];
-            res.render("home", { data: result, id, message: "User Account", flag: true, filter: "Recently Added" })
+            res.render("search", { data: result, id, message: "User Account", flag: true, filter: "Recently Added" })
         })
 
         .catch(err => console.log(err))
 })
 
-router.get('/osr/search1', authenticateToken, (req, res) => {
-
-});
 
 router.post('/osr/search', authenticateToken, (req, res) => {
     const id = req.user.id;
     var action = req.body.action;
+    var search = "";
     if (req.body.Search) {
-        const search = req.body.Search;
-        let flag = false;
-        for (let i = 0; i < search.length; i++) {
-            if (search[i] == '+' || search[i] == '-' || search[i] == '*' || search[i] == '<' || search[i] == '>' || search[i] == '(' || search[i] == ')' || search[i] == '~' || search[i] == '*') {
-                flag = true;
-            }
-        }
-        if (flag) {
-            db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? and (description LIKE ? or title LIKE ?) ORDER BY comments DESC", ['approve', '%' + search + '%', '%' + search + '%'])
-                .then((rs) => {
-                    let result = rs[0];
-                    res.render("home", { data: result, id, message: "User Account", flag: true, filter: action, search })
-                })
-                .catch(err => console.log(err));
-        }
-        else {
-            db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where Approval=? and MATCH(r.title) AGAINST(?) ORDER BY comments DESC", ['approve', search])
-                .then((rs) => {
-                    let result = rs[0];
-                    res.render("home", { data: result, id, message: "User Account", flag: true, filter: action, search })
-                })
-                .catch(err => console.log(err));
-        }
+        search = req.body.Search;
     }
     else {
-        const search = action.substr(action.lastIndexOf('_') + 1, action.length)
+        search = action.substr(action.lastIndexOf('_') + 1, action.length)
         action = action.substr(0, action.lastIndexOf('_'))
+    }
+    console.log(search)
+    let flag = false;
+    for (let i = 0; i < search.length; i++) {
+        if (search[i] == '+' || search[i] == '-' || search[i] == '*' || search[i] == '<' || search[i] == '>' || search[i] == '(' || search[i] == ')' || search[i] == '~' || search[i] == '*') {
+            flag = true;
+        }
+    }
+    if (flag) {
         if (action === "Recently Added") {
             //console.log(search)
             db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? and (description LIKE ? or title LIKE ?) ORDER BY date DESC", ['approve', '%' + search + '%', '%' + search + '%'])
                 .then((rs) => {
                     let result = rs[0];
-                    console.log(result)
-                    res.render("home", { data: result, id, message: "User Account", flag: true, filter: action, search })
+                    //console.log(result)
+                    res.render("search", { data: result, id, message: "User Account", flag: true, filter: action, search })
                 })
 
                 .catch(err => console.log(err))
@@ -120,21 +113,53 @@ router.post('/osr/search', authenticateToken, (req, res) => {
                 .then((rs) => {
                     let result = rs[0];
                     // console.log(result)
-                    res.render("home", { data: result, id, message: "User Account", flag: true, filter: action, search })
+                    res.render("search", { data: result, id, message: "User Account", flag: true, filter: action, search })
                 })
 
                 .catch(err => console.log(err))
         }
-        else{
+        else {
             db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? and (description LIKE ? or title LIKE ?) ORDER BY comments DESC", ['approve', '%' + search + '%', '%' + search + '%'])
                 .then((rs) => {
                     let result = rs[0];
                     // console.log(action)
-                    res.render("home", { data: result, id, message: "User Account", flag: true, filter: action, search })
+                    res.render("search", { data: result, id, message: "User Account", flag: true, filter: action, search })
                 })
 
                 .catch(err => console.log(err))
 
+        }
+    }
+    else {
+        if (action === "Recently Added") {
+            //console.log(search)
+            db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? and MATCH(r.title, r.description) AGAINST(?) ORDER BY date DESC", ['approve', search])
+                .then((rs) => {
+                    let result = rs[0];
+                    //console.log(result)
+                    res.render("search", { data: result, id, message: "User Account", flag: true, filter: action, search })
+                })
+
+                .catch(err => console.log(err))
+        }
+        else if (action == "Most Voted") {
+            db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? and MATCH(r.title, r.description) AGAINST(?) ORDER BY date DESC", ['approve', search])
+                .then((rs) => {
+                    let result = rs[0];
+                    // console.log(result)
+                    res.render("search", { data: result, id, message: "User Account", flag: true, filter: action, search })
+                })
+
+                .catch(err => console.log(err))
+        }
+        else {
+            db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? and MATCH(r.title, r.description) AGAINST(?) ORDER BY date DESC", ['approve', search])
+                .then((rs) => {
+                    let result = rs[0];
+                    // console.log(action)
+                    res.render("search", { data: result, id, message: "User Account", flag: true, filter: action, search })
+                })
+                .catch(err => console.log(err))
         }
     }
 })

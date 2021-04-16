@@ -53,3 +53,12 @@ button:hover {
     border:1px solid;
     padding:5px 10px;
 }
+
+.Popular_Title {
+    text-align: left;
+    border:1px solid black;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 40px;
+    color: blue;
+}
