@@ -29,13 +29,11 @@ router.post('/osr/not_login/search',  (req, res) => {
     }
     if (flag) {
         if (action === "Recently Added") {
-            //console.log(search)
             db.execute("SELECT r.res_id, r.user_id, r.title, r.link, r.content, r.date, r.description, r.likes, r.unlikes, r.Comments, IFNULL(rating.rate, -2) as rate, IFNULL(rating.rating_id, 0) as rating_id  from resources as r LEFT JOIN ratings as rating on r.res_id=rating.res_id where approval=? and (description LIKE ? or title LIKE ?) ORDER BY date DESC", ['approve', '%' + search + '%', '%' + search + '%'])
                 .then((rs) => {
                     let result = rs[0];
-                    //console.log(result)
                     res.render("not_login_Search", { data: result, message: "User Account", flag: false, filter: action, search })
-                })
+                }) 
 
                 .catch(err => console.log(err))
         }
